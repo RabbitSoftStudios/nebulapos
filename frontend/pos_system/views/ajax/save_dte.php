@@ -1,109 +1,19 @@
 <?php
-/**
- * AJAX: save_dte.php
- * Persistencia local de DTE, venta e inventario.
- */
 declare(strict_types=1);
 header('Content-Type: application/json');
 require_once __DIR__ . '/../../includes/config.php';
 require_once __DIR__ . '/../../includes/supabase.php';
 require_once __DIR__ . '/../../includes/pg_connection.php';
-
-if (session_status() === PHP_SESSION_NONE) session_start();
-$data = json_decode(file_get_contents('php://input'), true);
-if (!is_array($data) || empty($data['identificacion']['codigoGeneracion'])) {
-    http_response_code(400);
-    echo json_encode(['success'=>false,'error'=>'No se recibieron datos DTE válidos.']);
-    exit;
-}
-
-try {
-    $pdo = pg_pool();
-    $pdo->beginTransaction();
-
-    $codigo = (string)$data['identificacion']['codigoGeneracion'];
-    $tipo = (string)($data['identificacion']['tipoDte'] ?? '01');
-    $usuarioId = $_SESSION['user_id'] ?? $_SESSION['usuario_id'] ?? null;
-    $companyId = $_SESSION['empresa_id'] ?? null;
-    $empresaNit = $_SESSION['empresa_nit'] ?? ($data['emisor']['nit'] ?? null);
-    $total = (float)($data['resumen']['totalPagar'] ?? 0);
-    $items = is_array($data['cuerpoDocumento'] ?? null) ? $data['cuerpoDocumento'] : [];
-
-    // Número de control local, determinista y compatible con SQLite.
-    $stmt = $pdo->prepare("SELECT COALESCE(MAX(CAST(RIGHT(numero_control,15) AS INTEGER)),0)+1 FROM dte_facturas WHERE tipo_dte=?");
-    $stmt->execute([$tipo]);
-    $seq = str_pad((string)((int)$stmt->fetchColumn()),15,'0',STR_PAD_LEFT);
-    $numeroControl = $data['identificacion']['numeroControl'] ?? ('DTE-'.$tipo.'-P001M001-'.$seq);
-    $data['identificacion']['numeroControl'] = $numeroControl;
-
-    // Guardar DTE.
-    $dte = new SupabaseClient('dte_facturas');
-    $dteResult = $dte->insertDTE($data,$usuarioId,$empresaNit);
-    if (!($dteResult['success'] ?? false)) throw new RuntimeException($dteResult['error'] ?? 'No se pudo guardar el DTE.');
-    $dteId = $dteResult['id'] ?? ($dteResult['data'][0]['id'] ?? null);
-
-    // Guardar venta principal.
-    $venta = new SupabaseClient('pos_ventas');
-    $ventaResult = $venta->insert([
-        'company_id'=>$companyId,
-        'usuario_id'=>$usuarioId,
-        'codigo_generacion'=>$codigo,
-        'numero_control'=>$numeroControl,
-        'tipo_dte'=>$tipo,
-        'cliente_nombre'=>$data['receptor']['nombre'] ?? 'CONSUMIDOR FINAL',
-        'cliente_nit'=>$data['receptor']['nit'] ?? 'CF',
-        'total_pagar'=>$total,
-        'subtotal'=>(float)($data['resumen']['subTotal'] ?? $total),
-        'iva'=>(float)($data['resumen']['totalIva'] ?? 0),
-        'metodo_pago'=>((int)($data['resumen']['condicionOperacion'] ?? 1)===1?'Efectivo':'Tarjeta'),
-        'fecha_emision'=>$data['identificacion']['fecEmi'] ?? date('Y-m-d'),
-        'created_at'=>date('Y-m-d H:i:s')
-    ]);
-    if (!($ventaResult['success'] ?? false)) throw new RuntimeException($ventaResult['error'] ?? 'No se pudo guardar la venta.');
-    $ventaId = $ventaResult['id'] ?? ($ventaResult['data'][0]['id'] ?? null);
-
-    // Descontar inventario de cada producto y registrar movimiento.
-    $stockWarnings=[];
-    foreach ($items as $item) {
-        $codigoProducto = trim((string)($item['codigo'] ?? $item['codigoProducto'] ?? ''));
-        $cantidad = (float)($item['cantidad'] ?? 0);
-        if ($codigoProducto==='' || $cantidad<=0) continue;
-
-        $q=$pdo->prepare('SELECT * FROM dte_productos WHERE (codigo_producto=? OR codigo_barras=? OR sku=?) AND borrado_logico=0 LIMIT 1');
-        $q->execute([$codigoProducto,$codigoProducto,$codigoProducto]);
-        $product=$q->fetch();
-        if (!$product) {$stockWarnings[]='Producto no encontrado: '.$codigoProducto;continue;}
-
-        $stockBefore=(float)($product['stock_actual']??0);
-        $stockAfter=$stockBefore-$cantidad;
-        if ($stockAfter<0) throw new RuntimeException('Stock insuficiente para producto '.$codigoProducto.'. Disponible: '.$stockBefore.'.');
-
-        $u=$pdo->prepare('UPDATE dte_productos SET stock_actual=?, actualizado_el=CURRENT_TIMESTAMP WHERE id=?');
-        $u->execute([$stockAfter,$product['id']]);
-        $m=$pdo->prepare('INSERT INTO inventory_movements (company_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,referencia,usuario_id) VALUES (?,?,?,?,?,?,?,?)');
-        $m->execute([$companyId,$product['id'],'sale',$cantidad,$stockBefore,$stockAfter,$codigo,$usuarioId]);
-
-        if ($ventaId!==null) {
-            $d=$pdo->prepare('INSERT INTO detalle_ventas (venta_id,producto_id,cantidad,precio_unitario,subtotal,iva,total) VALUES (?,?,?,?,?,?,?)');
-            $unit=(float)($item['precioUni']??$item['precio']??0);$sub=(float)($item['ventaGravada']??$item['ventaExenta']??($unit*$cantidad));$iva=(float)($item['ivaItem']??0);
-            $d->execute([$ventaId,$product['id'],$cantidad,$unit,$sub,$iva,$sub+$iva]);
-        }
-    }
-
-    // Relacionar DTE y venta cuando las columnas existen.
-    if ($ventaId!==null && $dteId!==null) {
-        $pdo->prepare('UPDATE dte_facturas SET venta_id=?, company_id=?, usuario_id=? WHERE id=?')->execute([$ventaId,$companyId,$usuarioId,$dteId]);
-    }
-
-    $pdo->commit();
-
-    $dir=__DIR__.'/../../storage/sigs/';if(!is_dir($dir))mkdir($dir,0770,true);
-    file_put_contents($dir.'dte_'.$codigo.'.json',json_encode($data,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));
-
-    echo json_encode(['success'=>true,'mensaje'=>'Venta, inventario y DTE persistidos correctamente.','codigoGeneracion'=>$codigo,'numeroControl'=>$numeroControl,'dte_id'=>$dteId,'venta_id'=>$ventaId,'stock_warnings'=>$stockWarnings]);
-} catch(Throwable $e) {
-    if(isset($pdo)&&$pdo->inTransaction())$pdo->rollBack();
-    error_log('[save_dte] '.$e->getMessage());
-    http_response_code(500);
-    echo json_encode(['success'=>false,'error'=>$e->getMessage()]);
-}
+if(session_status()===PHP_SESSION_NONE)session_start();
+$data=json_decode(file_get_contents('php://input'),true);
+if(!is_array($data)||empty($data['identificacion']['codigoGeneracion'])){http_response_code(400);echo json_encode(['success'=>false,'error'=>'No se recibieron datos DTE válidos.']);exit;}
+try{
+ $pdo=pg_pool();$pdo->beginTransaction();$codigo=(string)$data['identificacion']['codigoGeneracion'];$tipo=(string)($data['identificacion']['tipoDte']??'01');$usuarioId=$_SESSION['user_id']??$_SESSION['usuario_id']??null;$companyId=$_SESSION['empresa_id']??null;$empresaNit=$_SESSION['empresa_nit']??($data['emisor']['nit']??null);$total=(float)($data['resumen']['totalPagar']??0);$items=is_array($data['cuerpoDocumento']??null)?$data['cuerpoDocumento']:[];
+ $stmt=$pdo->prepare("SELECT COALESCE(MAX(CAST(RIGHT(numero_control,15) AS INTEGER)),0)+1 FROM dte_facturas WHERE tipo_dte=?");$stmt->execute([$tipo]);$seq=str_pad((string)((int)$stmt->fetchColumn()),15,'0',STR_PAD_LEFT);$numeroControl=$data['identificacion']['numeroControl']??('DTE-'.$tipo.'-P001M001-'.$seq);$data['identificacion']['numeroControl']=$numeroControl;
+ $dte=new SupabaseClient('dte_facturas');$dteResult=$dte->insertDTE($data,$usuarioId,$empresaNit);if(!($dteResult['success']??false))throw new RuntimeException($dteResult['error']??'No se pudo guardar el DTE.');$dteId=$dteResult['id']??($dteResult['data'][0]['id']??null);
+ $venta=new SupabaseClient('pos_ventas');$ventaResult=$venta->insert(['company_id'=>$companyId,'usuario_id'=>$usuarioId,'codigo_generacion'=>$codigo,'numero_control'=>$numeroControl,'tipo_dte'=>$tipo,'cliente_nombre'=>$data['receptor']['nombre']??'CONSUMIDOR FINAL','cliente_nit'=>$data['receptor']['nit']??'CF','total_pagar'=>$total,'subtotal'=>(float)($data['resumen']['subTotal']??$total),'iva'=>(float)($data['resumen']['totalIva']??0),'metodo_pago'=>((int)($data['resumen']['condicionOperacion']??1)===1?'Efectivo':'Tarjeta'),'fecha_emision'=>$data['identificacion']['fecEmi']??date('Y-m-d'),'created_at'=>date('Y-m-d H:i:s')]);if(!($ventaResult['success']??false))throw new RuntimeException($ventaResult['error']??'No se pudo guardar la venta.');$ventaId=$ventaResult['id']??($ventaResult['data'][0]['id']??null);
+ $stockWarnings=[];
+ foreach($items as $item){$codigoProducto=trim((string)($item['codigo']??$item['codigoProducto']??''));$cantidad=(float)($item['cantidad']??0);if($codigoProducto===''||$cantidad<=0)continue;$q=$pdo->prepare('SELECT * FROM dte_productos WHERE (codigo_producto=? OR codigo_barras=? OR sku=?) AND borrado_logico=0 LIMIT 1');$q->execute([$codigoProducto,$codigoProducto,$codigoProducto]);$product=$q->fetch();if(!$product){$stockWarnings[]='Producto no encontrado: '.$codigoProducto;continue;}$stockBefore=(float)($product['stock_actual']??0);$stockAfter=$stockBefore-$cantidad;if($stockAfter<0)throw new RuntimeException('Stock insuficiente para producto '.$codigoProducto.'. Disponible: '.$stockBefore.'.');$pdo->prepare('UPDATE dte_productos SET stock_actual=?, actualizado_el=CURRENT_TIMESTAMP WHERE id=?')->execute([$stockAfter,$product['id']]);$pdo->prepare('INSERT INTO inventory_movements (company_id,producto_id,tipo,cantidad,stock_anterior,stock_nuevo,referencia,usuario_id) VALUES (?,?,?,?,?,?,?,?)')->execute([$companyId,$product['id'],'sale',$cantidad,$stockBefore,$stockAfter,$codigo,$usuarioId]);if($ventaId!==null){$d=$pdo->prepare('INSERT INTO detalle_ventas (venta_id,producto_id,cantidad,precio_unitario,subtotal,iva,total) VALUES (?,?,?,?,?,?,?)');$unit=(float)($item['precioUni']??$item['precio']??0);$sub=(float)($item['ventaGravada']??$item['ventaExenta']??($unit*$cantidad));$iva=(float)($item['ivaItem']??0);$d->execute([$ventaId,$product['id'],$cantidad,$unit,$sub,$iva,$sub+$iva]);}}
+ $hasVentaId=false;foreach($pdo->query('PRAGMA table_info(dte_facturas)')->fetchAll() as $col){if($col['name']==='venta_id'){$hasVentaId=true;break;}}if(!$hasVentaId)$pdo->exec('ALTER TABLE dte_facturas ADD COLUMN venta_id INTEGER');if($ventaId!==null&&$dteId!==null)$pdo->prepare('UPDATE dte_facturas SET venta_id=?, company_id=?, usuario_id=? WHERE id=?')->execute([$ventaId,$companyId,$usuarioId,$dteId]);
+ $pdo->commit();$dir=__DIR__.'/../../storage/sigs/';if(!is_dir($dir))mkdir($dir,0770,true);file_put_contents($dir.'dte_'.$codigo.'.json',json_encode($data,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES));echo json_encode(['success'=>true,'mensaje'=>'Venta, inventario y DTE persistidos correctamente.','codigoGeneracion'=>$codigo,'numeroControl'=>$numeroControl,'dte_id'=>$dteId,'venta_id'=>$ventaId,'stock_warnings'=>$stockWarnings]);
+}catch(Throwable $e){if(isset($pdo)&&$pdo->inTransaction())$pdo->rollBack();error_log('[save_dte] '.$e->getMessage());http_response_code(500);echo json_encode(['success'=>false,'error'=>$e->getMessage()]);}
