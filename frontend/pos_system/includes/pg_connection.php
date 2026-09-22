@@ -1,83 +1,74 @@
 <?php
 /**
- * PostgreSQL pooled connection with automatic reconnection
- * Team MYTS
+ * NebulaPOS - conexión PDO local SQLite
+ *
+ * Mantiene el nombre histórico pg_connection.php para evitar romper los
+ * módulos existentes, pero ya no utiliza PostgreSQL ni Supabase.
  */
+
+declare(strict_types=1);
 
 require_once __DIR__ . '/config.inc.php';
+require_once __DIR__ . '/sqlite_schema.php';
 
-/**
- * Verifica si la conexión PDO está activa
- * @param PDO $pdo
- * @return bool
- */
-function is_db_connected(PDO &$pdo): bool {
-    if ($pdo === null) return false;
-    
+function is_db_connected(PDO &$pdo): bool
+{
     try {
-        // Intentar un PING simple a la BD
         $pdo->query('SELECT 1');
         return true;
-    } catch (PDOException $e) {
-        error_log("Database connection check failed: " . $e->getMessage());
+    } catch (Throwable $e) {
+        error_log('[DB] SQLite connection check failed: ' . $e->getMessage());
         return false;
     }
 }
 
-/**
- * Retorna una instancia única de conexión PDO a PostgreSQL con reconexión automática.
- * @param bool $force_reconnect Forzar reconexión incluso si existe instancia
- * @return PDO
- */
-function pg_pool(bool $force_reconnect = false): PDO {
+function pg_pool(bool $force_reconnect = false): PDO
+{
     static $instance = null;
-    static $last_connection_attempt = 0;
 
-    // Si forzamos reconexión o la conexión está muerta, reintentar
-    if ($force_reconnect || $instance === null || !is_db_connected($instance)) {
-        // Evitar intentos de conexión demasiado frecuentes (mínimo 2 segundos entre intentos)
-        $now = time();
-        if ($now - $last_connection_attempt < 2) {
-            sleep(2 - ($now - $last_connection_attempt));
-        }
-        $last_connection_attempt = time();
+    if (!$force_reconnect && $instance instanceof PDO && is_db_connected($instance)) {
+        return $instance;
+    }
 
-        try {
-            $dsn = sprintf(
-                "pgsql:host=%s;port=%s;dbname=%s;sslmode=require;sslrootcert=%s",
-                DB_HOST,
-                DB_PORT,
-                DB_NAME,
-                __DIR__ . '/../config/rds-ca-2019-root.pem'
-            );
+    $dbPath = DB_PATH;
+    $directory = dirname($dbPath);
 
-            $instance = new PDO(
-                $dsn,
-                DB_USER,
-                DB_PASSWORD,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                    // Desabilitar persistent para evitar problemas de conexión stale
-                    PDO::ATTR_PERSISTENT => false,
-                    // Timeout para conexión
-                    PDO::ATTR_TIMEOUT => 10
-                ]
-            );
-
-            // Configurar la sesión de PostgreSQL
-            $instance->exec("SET client_encoding = 'UTF8'");
-            $instance->exec("SET default_transaction_isolation = 'read committed'");
-            
-            error_log("Database connection established/reconnected successfully");
-        } catch (PDOException $e) {
-            error_log("CRITICAL: Error connecting to database: " . $e->getMessage());
-            throw new Exception("Database connection failed: " . $e->getMessage());
+    if (!is_dir($directory)) {
+        if (!mkdir($directory, 0770, true) && !is_dir($directory)) {
+            throw new RuntimeException('No se pudo crear el directorio SQLite: ' . $directory);
         }
     }
 
-    return $instance;
+    try {
+        $instance = new PDO('sqlite:' . $dbPath, null, null, [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+        ]);
+
+        // Compatibilidad con SQL heredado de PostgreSQL utilizado por el POS.
+        if (method_exists($instance, 'sqliteCreateFunction')) {
+            $instance->sqliteCreateFunction('now', static fn(): string => date('Y-m-d H:i:s'), 0);
+            $instance->sqliteCreateFunction('CONCAT', static function (...$args): string {
+                return implode('', array_map(static fn($v) => (string)($v ?? ''), $args));
+            }, -1);
+            $instance->sqliteCreateFunction('RIGHT', static function ($value, $length): string {
+                $value = (string)$value;
+                $length = max(0, (int)$length);
+                return $length === 0 ? '' : substr($value, -$length);
+            }, 2);
+        }
+
+        initializeNebulaPOSSchema($instance);
+
+        error_log('[DB] SQLite connection established: ' . $dbPath);
+        return $instance;
+    } catch (PDOException $e) {
+        $instance = null;
+        error_log('[DB] CRITICAL SQLite error: ' . $e->getMessage());
+        throw new RuntimeException('Database connection failed: ' . $e->getMessage(), 0, $e);
+    }
 }
 
-// Ejemplo de uso:
+// Mantener compatibilidad con módulos que esperan $db al incluir el archivo.
 $db = pg_pool();
