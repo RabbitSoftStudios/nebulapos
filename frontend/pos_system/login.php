@@ -1,51 +1,50 @@
 <?php
 /**
- * Sistema POS - Pantalla de Login
- * ================================
- * Maneja la autenticación de usuarios.
- * * @package    POS System
- * @author     Nebula DET Team
- * @version    2.0.0
+ * NebulaPOS POS - Login local.
  */
-
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/config/constants.php';
-require_once __DIR__ . '/includes/auth.php'; // Incluye el manejo de autenticación
+require_once __DIR__ . '/includes/auth.php';
 
-// session_start(); // Ahora se maneja en constants.php
+if (session_status() === PHP_SESSION_NONE) session_start();
 
 $error_message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    // Función de autenticación simulada (en un sistema real usaría auth.php y Supabase)
-    $authResult = authenticateUser($username, $password);
-    
-    if ($authResult && isset($authResult['user'])) {
-        $user = $authResult['user'];
-        
-        // Autenticación exitosa
-        $_SESSION['pos_authenticated'] = true;
-        $_SESSION['user_id'] = $user['id'] ?? 1;
-        $_SESSION['empresa_uuid'] = $user['empresa_uuid'] ?? null;
-        $_SESSION['cashier'] = [
-            'id' => $user['id'] ?? 1,
-            'name' => $user['nombre'] ?? $username,
-            'code' => $user['codigo'] ?? 'ADMIN',
-            'rol' => $user['rol'] ?? 'admin'
-        ];
-        
-        // Redireccionar según el rol
-        if (($user['rol'] ?? 'admin') === 'admin') {
-            header('Location: ' . BASE_URL . '/dashboard');
-        } else {
-            header('Location: ' . BASE_URL . '/pos');
+    $username = trim((string)($_POST['username'] ?? ''));
+    $password = (string)($_POST['password'] ?? '');
+
+    try {
+        $db = pg_pool();
+        $stmt = $db->prepare(
+            'SELECT u.id, u.name, u.email, u.password, u.company_id, u.active
+             FROM users u
+             WHERE (lower(u.email) = lower(:identity) OR lower(u.name) = lower(:identity))
+             LIMIT 1'
+        );
+        $stmt->execute([':identity' => $username]);
+        $user = $stmt->fetch();
+
+        if ($user && (int)$user['active'] === 1 && password_verify($password, (string)$user['password'])) {
+            session_regenerate_id(true);
+            $_SESSION['pos_authenticated'] = true;
+            $_SESSION['user_id'] = (int)$user['id'];
+            $_SESSION['empresa_id'] = $user['company_id'] !== null ? (int)$user['company_id'] : null;
+            $_SESSION['cashier'] = [
+                'id' => (int)$user['id'],
+                'name' => $user['name'],
+                'code' => 'USER-' . $user['id'],
+                'rol' => 'user'
+            ];
+
+            header('Location: /pos_system/');
+            exit;
         }
-        exit();
-    } else {
+
         $error_message = 'Usuario o contraseña incorrectos.';
+    } catch (Throwable $e) {
+        error_log('[AUTH] login error: ' . $e->getMessage());
+        $error_message = 'No fue posible validar la sesión.';
     }
 }
 ?>
@@ -54,120 +53,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= APP_NAME ?> - Login</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title><?= htmlspecialchars(APP_NAME) ?> - Login</title>
     <style>
-        body { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-            min-height: 100vh; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px; 
-        }
-        .login-container {
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            max-width: 400px;
-            width: 100%;
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .login-header h2 {
-            color: #2c3e50;
-            font-weight: 700;
-        }
+        body { background: #f4f6f8; min-height: 100vh; display:flex; align-items:center; justify-content:center; margin:0; padding:20px; font-family:Arial,sans-serif; }
+        .login-container { background:#fff; border-radius:15px; padding:40px; box-shadow:0 20px 40px rgba(0,0,0,.1); max-width:400px; width:100%; }
+        .login-header { text-align:center; margin-bottom:30px; }
+        .login-header h2 { margin:0 0 8px; }
+        label { display:block; margin-bottom:6px; }
+        input { width:100%; box-sizing:border-box; padding:12px; margin-bottom:18px; border:1px solid #ccc; border-radius:8px; }
+        button { width:100%; padding:13px; border:0; border-radius:8px; cursor:pointer; font-weight:700; }
+        .error { background:#fee2e2; color:#991b1b; padding:12px; border-radius:8px; margin-bottom:18px; }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-header">
-            <h2 class="text-primary"><?= APP_NAME ?></h2>
-            <p>Acceso al Punto de Venta</p>
-        </div>
-        
-        <?php if (!empty($error_message)): ?>
-            <div class="alert alert-danger" role="alert">
-                <?= htmlspecialchars($error_message) ?>
-            </div>
-        <?php endif; ?>
-        
-        <form method="POST">
-            <div class="mb-3">
-                <label for="username" class="form-label"><i class="fas fa-user"></i> Usuario</label>
-                <input type="text" class="form-control" id="username" name="username" value="admin" required autofocus>
-            </div>
-            <div class="mb-4">
-                <label for="password" class="form-label"><i class="fas fa-lock"></i> Contraseña</label>
-                <input type="password" class="form-control" id="password" name="password" value="admin123" required>
-            </div>
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</button>
-            </div>
-        </form>
-        
-        <div class="text-center mt-4">
-            <small class="text-muted">Versión <?= APP_VERSION ?></small>
-        </div>
+<div class="login-container">
+    <div class="login-header">
+        <h2><?= htmlspecialchars(APP_NAME) ?></h2>
+        <p>Acceso al Punto de Venta</p>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <?php if ($error_message): ?><div class="error"><?= htmlspecialchars($error_message) ?></div><?php endif; ?>
+    <form method="POST" autocomplete="on">
+        <label for="username">Usuario o correo</label>
+        <input type="text" id="username" name="username" required autofocus>
+        <label for="password">Contraseña</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Iniciar sesión</button>
+    </form>
+</div>
 </body>
 </html>
-<?php
-// Función de autenticación simulada (DEBE SER REEMPLAZADA)
-function authenticateUser($username, $password) {
-    // **ADVERTENCIA: ESTO ES SOLO PARA DEMO. NUNCA USAR ASÍ EN PRODUCCIÓN.**
-    // La autenticación real debe ir contra la tabla de usuarios de Supabase.
-    
-    // Si la configuración aún no existe, permitir credenciales de setup
-    if (!defined('APP_VERSION')) {
-        if ($username === 'admin' && $password === 'password') {
-            return [
-                'success' => true,
-                'user' => [
-                    'id' => 1,
-                    'nombre' => 'Administrador',
-                    'email' => 'admin@example.com',
-                    'rol' => 'admin',
-                    'empresa_uuid' => 'demo-uuid-empresa-1'
-                ]
-            ];
-        }
-        return false;
-    }
-    
-    // Simulación de credenciales fijas para demo
-    if ($username === 'admin' && $password === 'admin123') {
-        return [
-            'success' => true,
-            'user' => [
-                'id' => 1,
-                'nombre' => 'Administrador',
-                'email' => 'admin@example.com',
-                'rol' => 'admin',
-                'codigo' => 'ADMIN',
-                'empresa_uuid' => 'demo-uuid-empresa-1'
-            ]
-        ];
-    }
-
-    // TODO: Lógica para autenticar contra Supabase (usando el cliente de supabase.php)
-    // require_once __DIR__ . '/includes/supabase.php';
-    // require_once __DIR__ . '/includes/UsuarioService.php';
-    // $userService = new UsuarioService();
-    // $result = $userService->verifyCredentials($username, $password);
-    // if ($result['success']) {
-    //     return [
-    //         'success' => true,
-    //         'user' => $result['data']
-    //     ];
-    // }
-    
-    return false;
-}
-?>
