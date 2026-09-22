@@ -1,0 +1,15 @@
+create table public.job_queue (
+  id bigserial primary key,
+  tipo text not null,              -- sms | email | pdf
+  payload jsonb not null,
+  estado text not null default 'pendiente', -- pendiente | procesando | completado | fallido
+  intentos integer not null default 0,
+  error text null,
+  prioridad integer default 5,
+  disponible_en timestamptz default now(),
+  created_at timestamptz default now(),
+  updated_at timestamptz
+);
+
+create index idx_job_queue_estado on job_queue (estado);
+create index idx_job_queue_disponible on job_queue (disponible_en);

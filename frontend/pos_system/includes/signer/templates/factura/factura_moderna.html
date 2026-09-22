@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { font-family: Helvetica, sans-serif; font-size: 12px; }
+.header { border-bottom:2px solid #000; margin-bottom:10px; }
+table { width:100%; border-collapse:collapse; }
+th { background:#eee; }
+th, td { padding:6px; border-bottom:1px solid #ccc; }
+.total { text-align:right; font-size:14px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="<?= $config['logo_factura_url'] ?>" height="80"><br>
+  <strong><?= $config['nombre_comercial'] ?></strong>
+</div>
+
+<p>
+Factura electrónica<br>
+<?= $config['razon_social'] ?><br>
+NIT <?= $config['nit'] ?>
+</p>
+
+<table>
+<tr>
+  <th>Detalle</th>
+  <th>Total</th>
+</tr>
+
+<?php foreach ($dte['cuerpoDocumento'] as $item): ?>
+<tr>
+  <td><?= $item['descripcion'] ?></td>
+  <td style="text-align:right">$<?= number_format($item['ventaTotal'], 2) ?></td>
+</tr>
+<?php endforeach; ?>
+</table>
+
+<p class="total">
+<strong>Total $<?= number_format($dte['resumen']['totalPagar'], 2) ?></strong>
+</p>
+
+<?php if ($config['incluir_qr']): ?>
+<img src="<?= $qrPath ?>" width="140">
+<?php endif; ?>
+
+</body>
+</html>

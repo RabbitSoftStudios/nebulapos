@@ -1,0 +1,83 @@
+{
+    "identificacion": {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "01",
+        "numeroControl": "DTE-01-12345678-B0E0947B7FA6D7A",
+        "codigoGeneracion": "5784B3E9-74FD-7C14-992E-1DD22B2C7239",
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "fecEmi": "2025-12-23",
+        "horEmi": "13:43:22",
+        "tipoMoneda": "USD"
+    },
+    "emisor": {
+        "nit": "06150911851010",
+        "nrc": "1992934",
+        "nombre": "Rodriguez Machuca Jose Alexander",
+        "codActividad": "46510",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "receptor": {
+        "nombre": "AXEL",
+        "correo": "crash@crash.com",
+        "tipoDocumento": "13",
+        "numDocumento": "00000000-0",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "cuerpoDocumento": [
+        {
+            "numItem": 1,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 0,
+            "ventaGravada": 15,
+            "codigo": "6",
+            "ivaItem": 1.73
+        },
+        {
+            "numItem": 2,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 0,
+            "ventaGravada": 15,
+            "codigo": "7",
+            "ivaItem": 1.73
+        },
+        {
+            "numItem": 3,
+            "tipoItem": 1,
+            "descripcion": "Producto Test 1",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 50,
+            "montoDescu": 0,
+            "ventaGravada": 50,
+            "codigo": "4",
+            "ivaItem": 5.75
+        }
+    ],
+    "resumen": {
+        "totalGravada": 80,
+        "totalDescu": 0,
+        "totalPagar": 80,
+        "totalLetras": "SON 80 00\/100 DOLARES",
+        "totalIva": 9.2,
+        "condicionOperacion": 1,
+        "pagos": []
+    }
+}

@@ -1,0 +1,105 @@
+/**
+ * Sistema POS - Temas y Colores
+ * =============================
+ * Permite cambiar el esquema de color o el tema de la aplicación.
+ * * @package    POS System
+ * @author     Nebula DET Team
+ * @version    2.0.0
+ */
+
+/* ==================== TEMA BASE (LIGHT) ==================== */
+[data-theme="light"] {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --dark-color: #2c3e50;
+    --background-color: #f7f9fc;
+    --card-background: white;
+    --text-color: var(--dark-color);
+}
+
+/* ==================== TEMA DARK ==================== */
+[data-theme="dark"] {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --dark-color: #f7f9fc; /* Usado como color de texto */
+    --background-color: #1a202c;
+    --card-background: #2d3748;
+    --text-color: var(--dark-color);
+}
+
+/* Aplicación del tema oscuro */
+[data-theme="dark"] body {
+    background: var(--background-color);
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .pos-header, 
+[data-theme="dark"] .pos-info-card, 
+[data-theme="dark"] .pos-scanner-section, 
+[data-theme="dark"] .product-card, 
+[data-theme="dark"] .pos-cart-items, 
+[data-theme="dark"] .pos-totals, 
+[data-theme="dark"] .pos-action-buttons,
+[data-theme="dark"] .pos-keyboard-section {
+    background: var(--card-background) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme="dark"] .pos-left-panel {
+    border-right-color: #4a5568 !important;
+}
+
+[data-theme="dark"] .pos-cart-header {
+    border-bottom-color: #4a5568 !important;
+}
+
+[data-theme="dark"] .pos-info-card i, 
+[data-theme="dark"] .pos-cart-header h3,
+[data-theme="dark"] .pos-frequent-products h5,
+[data-theme="dark"] .product-info h6,
+[data-theme="dark"] .keyboard-btn,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6 {
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .total-row, 
+[data-theme="dark"] .cart-item {
+    border-color: #4a5568 !important;
+}
+
+[data-theme="dark"] .total-row.grand-total {
+    border-color: var(--primary-color) !important;
+}
+
+[data-theme="dark"] .item-name {
+    color: var(--text-color);
+}
+
+[data-theme="dark"] .keyboard-btn.btn-action {
+    background: #4a5568 !important;
+    color: var(--text-color) !important;
+}
+
+[data-theme="dark"] .form-control {
+    background: #4a5568;
+    color: var(--text-color);
+    border-color: #667eea;
+}
+
+[data-theme="dark"] .form-control:focus {
+    background: #4a5568;
+    color: var(--text-color);
+    border-color: #a0aec0;
+    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
+}
+
+/* ==================== OTROS TEMAS (EJEMPLO) ==================== */
+
+[data-theme="modern"] {
+    --primary-color: #00bcd4; /* Cyan */
+    --secondary-color: #0097a7;
+    --background-color: #ffffff;
+    --card-background: #f0f8ff;
+}
+
+/* Se podrían agregar más estilos específicos para el tema 'modern' */

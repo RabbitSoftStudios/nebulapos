@@ -1,0 +1,59 @@
+{
+    "identificacion": {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "01",
+        "numeroControl": "DTE-01-12345678-E7DD79D96BB2313",
+        "codigoGeneracion": "35556B22-8A22-9DB9-69B5-C9891F6E40D5",
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "fecEmi": "2025-12-23",
+        "horEmi": "01:39:17",
+        "tipoMoneda": "USD"
+    },
+    "emisor": {
+        "nit": "06150911851010",
+        "nrc": "1992934",
+        "nombre": "Rodriguez Machuca Jose Alexander",
+        "codActividad": "46510",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "receptor": {
+        "nombre": "Consumidor Final",
+        "correo": "damefactura@gmail.com",
+        "tipoDocumento": "13",
+        "numDocumento": "00000000-0",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "cuerpoDocumento": [
+        {
+            "numItem": 1,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 0,
+            "ventaGravada": 15,
+            "codigo": "7",
+            "ivaItem": 1.73
+        }
+    ],
+    "resumen": {
+        "totalGravada": 15,
+        "totalDescu": 0,
+        "totalPagar": 15,
+        "totalLetras": "SON 15 00\/100 DOLARES",
+        "totalIva": 1.73,
+        "condicionOperacion": 1,
+        "pagos": []
+    }
+}

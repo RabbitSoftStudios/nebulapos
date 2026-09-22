@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Integración Wompi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { padding: 20px; background: #f5f7fa; }
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .test-result { margin: 10px 0; padding: 15px; border-radius: 8px; }
+        .test-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .test-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .test-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .code-block { background: #282c34; color: #abb2bf; padding: 15px; border-radius: 8px; overflow-x: auto; }
+        .code-block code { font-family: 'Courier New', monospace; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="mb-4">🧪 Test de Integración Wompi</h1>
+        
+        <div class="card mb-3">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Estado de Configuración</h5>
+            </div>
+            <div class="card-body">
+                <div id="config-status"></div>
+            </div>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">Tests de Conexión</h5>
+            </div>
+            <div class="card-body">
+                <button class="btn btn-primary me-2" onclick="testGetConfig()">Test: get-config</button>
+                <button class="btn btn-primary me-2" onclick="testCreatePayment()">Test: create-payment</button>
+                <button class="btn btn-primary" onclick="testVerifyPayment()">Test: verify-payment</button>
+                <div id="test-results" class="mt-3"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Información Técnica</h5>
+            </div>
+            <div class="card-body">
+                <h6>Verificar carga de módulo:</h6>
+                <div class="code-block"><code id="module-check"></code></div>
+                
+                <h6 class="mt-3">Logs de navegador:</h6>
+                <div class="code-block"><code id="browser-logs"></code></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="ajax/wompi.js"></script>
+
+    <script>
+        // Inicializar tests
+        document.addEventListener('DOMContentLoaded', async () => {
+            checkConfiguration();
+            checkModuleLoaded();
+        });
+
+        // Verificar configuración
+        async function checkConfiguration() {
+            const resultsDiv = document.getElementById('config-status');
+            resultsDiv.innerHTML = '<p class="text-muted">Verificando...</p>';
+
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=get-config');
+                const data = await response.json();
+
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-success">
+                            <strong>✓ Configuración cargada correctamente</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Client ID: ${data.clientId.substring(0, 10)}...</li>
+                                <li>API URL: ${data.apiUrl}</li>
+                                <li>Token URL: ${data.tokenUrl}</li>
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-error">
+                            <strong>✗ Error en configuración:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="test-result test-error">
+                        <strong>✗ Error de conexión:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Verificar que módulo está cargado
+        function checkModuleLoaded() {
+            const moduleDiv = document.getElementById('module-check');
+            
+            if (typeof WompiPayment !== 'undefined') {
+                const methods = Object.keys(WompiPayment).join(', ');
+                moduleDiv.textContent = `✓ WompiPayment cargado\nMétodos: ${methods}`;
+            } else {
+                moduleDiv.textContent = '✗ WompiPayment no está disponible';
+            }
+        }
+
+        // Test: get-config
+        async function testGetConfig() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p class="text-muted">Ejecutando test...</p>';
+
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=get-config');
+                const data = await response.json();
+
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-success">
+                            <strong>✓ Test get-config exitoso</strong>
+                            <pre class="mb-0"><code>${JSON.stringify(data, null, 2)}</code></pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-error">
+                            <strong>✗ Error:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="test-result test-error">
+                        <strong>✗ Exception:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test: create-payment
+        async function testCreatePayment() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p class="text-muted">Ejecutando test...</p>';
+
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=create-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: 10.00,
+                        email: 'test@example.com',
+                        description: 'Test de pago',
+                        reference: 'TEST-' + Date.now()
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-success">
+                            <strong>✓ Test create-payment exitoso</strong>
+                            <pre class="mb-0"><code>${JSON.stringify({
+                                success: data.success,
+                                reference: data.reference,
+                                amount: data.amount,
+                                paymentLink: data.paymentLink ? 'URL generada' : 'No generada'
+                            }, null, 2)}</code></pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-error">
+                            <strong>✗ Error:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="test-result test-error">
+                        <strong>✗ Exception:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Test: verify-payment
+        async function testVerifyPayment() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p class="text-muted">Ejecutando test...</p>';
+
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reference: 'TEST-12345'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-success">
+                            <strong>✓ Test verify-payment exitoso</strong>
+                            <pre class="mb-0"><code>${JSON.stringify(data, null, 2)}</code></pre>
+                        </div>
+                    `;
+                } else {
+                    resultsDiv.innerHTML = `
+                        <div class="test-result test-error">
+                            <strong>✗ Error:</strong> ${data.error}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `
+                    <div class="test-result test-error">
+                        <strong>✗ Exception:</strong> ${error.message}
+                    </div>
+                `;
+            }
+        }
+
+        // Logging mejorado
+        const originalLog = console.log;
+        const logs = [];
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logs.push(args.join(' '));
+            if (logs.length > 10) logs.shift();
+            updateLogs();
+        };
+
+        function updateLogs() {
+            const logsDiv = document.getElementById('browser-logs');
+            logsDiv.textContent = logs.join('\n') || 'Sin logs aún...';
+        }
+    </script>
+</body>
+</html>

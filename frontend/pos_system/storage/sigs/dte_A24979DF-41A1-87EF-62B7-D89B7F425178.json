@@ -1,0 +1,95 @@
+{
+    "identificacion": {
+        "version": 1,
+        "ambiente": "00",
+        "tipoDte": "01",
+        "numeroControl": "DTE-01-94A9D54887B16C0",
+        "codigoGeneracion": "A24979DF-41A1-87EF-62B7-D89B7F425178",
+        "tipoModelo": 1,
+        "tipoOperacion": 1,
+        "fecEmi": "2025-12-20",
+        "horEmi": "22:37:37",
+        "tipoMoneda": "USD"
+    },
+    "emisor": {
+        "nit": "06150911851010",
+        "nrc": "1992934",
+        "nombre": "Rodriguez Machuca Jose Alexander",
+        "codActividad": "46510",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "receptor": {
+        "nombre": "KENIA MARTINEZ",
+        "correo": "martinez@gmail.com",
+        "tipoDocumento": "13",
+        "numDocumento": "00000000-0",
+        "direccion": {
+            "departamento": "06",
+            "municipio": "23",
+            "complemento": "San Salvador"
+        }
+    },
+    "cuerpoDocumento": [
+        {
+            "numItem": 1,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 0,
+            "ventaGravada": 15,
+            "codigo": "5",
+            "ivaItem": 1.73
+        },
+        {
+            "numItem": 2,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 4,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 0,
+            "ventaGravada": 60,
+            "codigo": "6",
+            "ivaItem": 6.9
+        },
+        {
+            "numItem": 3,
+            "tipoItem": 1,
+            "descripcion": "Producto Editado",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 15,
+            "montoDescu": 3.45,
+            "ventaGravada": 11.55,
+            "codigo": "7",
+            "ivaItem": 1.33
+        },
+        {
+            "numItem": 4,
+            "tipoItem": 1,
+            "descripcion": "Producto Test 1",
+            "cantidad": 1,
+            "uniMedida": 59,
+            "precioUni": 50,
+            "montoDescu": 0,
+            "ventaGravada": 50,
+            "codigo": "4",
+            "ivaItem": 5.75
+        }
+    ],
+    "resumen": {
+        "totalGravada": 136.55,
+        "totalDescu": 3.45,
+        "totalPagar": 136.55,
+        "totalLetras": "SON 136 55\/100 DOLARES",
+        "totalIva": 15.71,
+        "condicionOperacion": 1,
+        "pagos": []
+    }
+}

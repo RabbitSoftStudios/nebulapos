@@ -1,0 +1,72 @@
+/**
+ * Sistema POS - Animaciones
+ * ==================================
+ * * @package    POS System
+ * @author     Nebula DET Team
+ * @version    2.0.0
+ */
+
+/* ==================== ANIMACIONES BASE ==================== */
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fadeIn {
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
+}
+
+@keyframes scaleIn {
+    from { 
+        opacity: 0; 
+        transform: scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(102, 126, 234, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(102, 126, 234, 0);
+    }
+}
+
+/* ==================== ANIMACIONES ESPECÍFICAS ==================== */
+
+/* Aplicar animaciones en la carga de elementos */
+.product-card, .cart-item, .pos-info-card {
+    animation: slideIn 0.3s ease-out;
+}
+
+.pos-totals, .pos-action-buttons {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Animación para el botón de finalizar venta cuando está habilitado */
+#complete-sale-btn:not(:disabled) {
+    animation: pulse 2s infinite;
+}
+
+/* Transiciones para cambios de estado/hover */
+.product-card, .pos-info-card, .payment-btn {
+    transition: all var(--transition-normal);
+}

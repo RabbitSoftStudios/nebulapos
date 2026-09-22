@@ -1,0 +1,482 @@
+<!-- 
+    CHECKLIST DE VERIFICACIÓN - INTEGRACIÓN WOMPI
+    ================================================
+    Use este archivo para verificar que todo está instalado correctamente
+-->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist - Integración Wompi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            padding: 30px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .checklist-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .checklist-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .checklist-header h1 { font-size: 2.5rem; margin: 0; }
+        .checklist-header p { margin: 10px 0 0 0; font-size: 1.1rem; }
+        .checklist-body { padding: 30px; }
+        .check-item {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #ccc;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        .check-item.done {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        .check-item.pending {
+            background: #fff3cd;
+            border-left-color: #ffc107;
+        }
+        .check-item.error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+        }
+        .check-icon {
+            font-size: 1.5rem;
+            min-width: 30px;
+            text-align: center;
+        }
+        .check-content h5 { margin: 0 0 5px 0; }
+        .check-content p { margin: 0; font-size: 0.9rem; color: #666; }
+        .check-code {
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            overflow-x: auto;
+        }
+        .progress-bar-animated { animation: progress-bar-stripes 1s linear infinite; }
+        .summary {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        .summary-stat {
+            text-align: center;
+            padding: 15px;
+        }
+        .summary-stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .summary-stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="checklist-container">
+        <div class="checklist-header">
+            <h1>✓ Checklist de Instalación</h1>
+            <p>Integración de Pagos con Wompi</p>
+        </div>
+
+        <div class="checklist-body">
+            <!-- SECCIÓN 1: CONFIGURACIÓN -->
+            <h3 class="mt-0 mb-3">🔧 1. Configuración del Entorno</h3>
+            
+            <div class="check-item pending" id="check-env">
+                <div class="check-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>Archivo .env configurado</h5>
+                    <p>Verificar que contiene WOMPI_CLIENT_ID y WOMPI_CLIENT_SECRET</p>
+                    <div class="check-code">
+WOMPI_CLIENT_ID = "71e287e0-d36a-469c-b1e7-ab878326b10f"
+WOMPI_CLIENT_SECRET = "86fbd539-48a2-4f35-8eb0-8f2120166309"
+                    </div>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-php">
+                <div class="check-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>PHP con cURL habilitado</h5>
+                    <p>Necesario para comunicarse con API de Wompi</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testPHP()">
+                        <i class="fas fa-play"></i> Probar
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2: ARCHIVOS -->
+            <h3 class="mt-4 mb-3">📁 2. Archivos Creados/Actualizados</h3>
+
+            <div class="check-item pending" id="check-wompi-payment">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>views/ajax/wompi_payment.php</h5>
+                    <p>Endpoint backend para gestionar pagos</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testWompiPaymentFile()">
+                        <i class="fas fa-play"></i> Verificar
+                    </button>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-config">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>config/wompi.php</h5>
+                    <p>Configuración centralizada de Wompi</p>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-wompi-js">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>views/ajax/wompi.js</h5>
+                    <p>Módulo JavaScript de pagos (actualizado)</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testWompiJS()">
+                        <i class="fas fa-play"></i> Verificar
+                    </button>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-pos-sale">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>views/pos_sale.php</h5>
+                    <p>Función showCardPaymentModal() actualizada</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testPosSale()">
+                        <i class="fas fa-play"></i> Verificar
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: FUNCIONALIDAD -->
+            <h3 class="mt-4 mb-3">⚙️ 3. Pruebas de Funcionalidad</h3>
+
+            <div class="check-item pending" id="check-get-config">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>Endpoint: get-config</h5>
+                    <p>Obtener configuración de cliente</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testGetConfig()">
+                        <i class="fas fa-play"></i> Probar
+                    </button>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-create-payment">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>Endpoint: create-payment</h5>
+                    <p>Crear enlace de pago en Wompi</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testCreatePayment()">
+                        <i class="fas fa-play"></i> Probar
+                    </button>
+                </div>
+            </div>
+
+            <div class="check-item pending" id="check-verify-payment">
+                <div class="check-icon">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>Endpoint: verify-payment</h5>
+                    <p>Verificar estado de pago</p>
+                    <button class="btn btn-sm btn-primary mt-2" onclick="testVerifyPayment()">
+                        <i class="fas fa-play"></i> Probar
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: DOCUMENTACIÓN -->
+            <h3 class="mt-4 mb-3">📚 4. Documentación</h3>
+
+            <div class="check-item done">
+                <div class="check-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>WOMPI_INTEGRATION.php</h5>
+                    <p>Documentación técnica completa</p>
+                </div>
+            </div>
+
+            <div class="check-item done">
+                <div class="check-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>WOMPI_README.md</h5>
+                    <p>Guía rápida de uso</p>
+                </div>
+            </div>
+
+            <div class="check-item done">
+                <div class="check-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>CAMBIOS_REALIZADOS.md</h5>
+                    <p>Resumen detallado de cambios</p>
+                </div>
+            </div>
+
+            <div class="check-item done">
+                <div class="check-icon">
+                    <i class="fas fa-book"></i>
+                </div>
+                <div class="check-content flex-grow-1">
+                    <h5>EJEMPLOS_WOMPI.js</h5>
+                    <p>Ejemplos de código y casos de uso</p>
+                </div>
+            </div>
+
+            <!-- RESUMEN -->
+            <div class="summary">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="summary-stat">
+                            <div class="summary-stat-number" id="stat-done">0</div>
+                            <div class="summary-stat-label">Completados</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="summary-stat">
+                            <div class="summary-stat-number" id="stat-pending">0</div>
+                            <div class="summary-stat-label">Pendientes</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="summary-stat">
+                            <div class="summary-stat-number" id="stat-error">0</div>
+                            <div class="summary-stat-label">Errores</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="summary-stat">
+                            <div class="summary-stat-number" id="stat-total">0</div>
+                            <div class="summary-stat-label">Total</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="progress mt-3">
+                    <div id="progress-bar" class="progress-bar progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- BOTONES DE ACCIÓN -->
+            <div class="mt-4 text-center">
+                <button class="btn btn-primary btn-lg me-2" onclick="runAllTests()">
+                    <i class="fas fa-play"></i> Ejecutar Todas las Pruebas
+                </button>
+                <button class="btn btn-secondary btn-lg" onclick="resetChecklist()">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+            </div>
+
+            <!-- INSTRUCCIONES FINALES -->
+            <div class="alert alert-info mt-4">
+                <h5>✓ Próximos Pasos</h5>
+                <ol class="mb-0">
+                    <li>Completar todas las verificaciones de esta lista</li>
+                    <li>Acceder a <a href="/views/wompi_test.html" target="_blank">página de testing</a></li>
+                    <li>Probar en el POS: Agregar producto → Click "Tarjeta"</li>
+                    <li>Usar credenciales de prueba de Wompi</li>
+                    <li>Revisar documentación en caso de problemas</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Marcar elemento como completado
+        function markDone(elementId) {
+            const element = document.getElementById(elementId);
+            element.classList.remove('pending', 'error');
+            element.classList.add('done');
+            element.querySelector('.check-icon i').className = 'fas fa-check-circle';
+            updateProgress();
+        }
+
+        // Marcar elemento como error
+        function markError(elementId, message = '') {
+            const element = document.getElementById(elementId);
+            element.classList.remove('pending', 'done');
+            element.classList.add('error');
+            element.querySelector('.check-icon i').className = 'fas fa-times-circle';
+            if (message) {
+                const content = element.querySelector('.check-content');
+                content.innerHTML += `<p class="text-danger small mt-2"><i class="fas fa-exclamation"></i> ${message}</p>`;
+            }
+            updateProgress();
+        }
+
+        // Actualizar progreso
+        function updateProgress() {
+            const total = document.querySelectorAll('.check-item').length;
+            const done = document.querySelectorAll('.check-item.done').length;
+            const pending = document.querySelectorAll('.check-item.pending').length;
+            const error = document.querySelectorAll('.check-item.error').length;
+
+            document.getElementById('stat-done').textContent = done;
+            document.getElementById('stat-pending').textContent = pending;
+            document.getElementById('stat-error').textContent = error;
+            document.getElementById('stat-total').textContent = total;
+
+            const percentage = (done / total) * 100;
+            document.getElementById('progress-bar').style.width = percentage + '%';
+        }
+
+        // Tests
+        async function testPHP() {
+            console.log('Probando PHP...');
+            fetch('ajax/wompi_payment.php?action=get-config')
+                .then(r => r.json())
+                .then(d => {
+                    if (d.success) markDone('check-php');
+                    else markError('check-php', 'Error al comunicarse con servidor');
+                })
+                .catch(e => markError('check-php', e.message));
+        }
+
+        async function testWompiPaymentFile() {
+            fetch('ajax/wompi_payment.php')
+                .then(r => r.ok ? markDone('check-wompi-payment') : markError('check-wompi-payment'))
+                .catch(e => markError('check-wompi-payment', e.message));
+        }
+
+        async function testWompiJS() {
+            if (typeof WompiPayment !== 'undefined') {
+                markDone('check-wompi-js');
+            } else {
+                markError('check-wompi-js', 'WompiPayment no está cargado');
+            }
+        }
+
+        async function testPosSale() {
+            if (typeof showCardPaymentModal === 'function') {
+                markDone('check-pos-sale');
+            } else {
+                markError('check-pos-sale', 'Función showCardPaymentModal no encontrada');
+            }
+        }
+
+        async function testGetConfig() {
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=get-config');
+                const data = await response.json();
+                if (data.success) {
+                    markDone('check-get-config');
+                } else {
+                    markError('check-get-config', data.error);
+                }
+            } catch (e) {
+                markError('check-get-config', e.message);
+            }
+        }
+
+        async function testCreatePayment() {
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=create-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        amount: 1.00,
+                        email: 'test@example.com',
+                        description: 'Test'
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    markDone('check-create-payment');
+                } else {
+                    markError('check-create-payment', data.error);
+                }
+            } catch (e) {
+                markError('check-create-payment', e.message);
+            }
+        }
+
+        async function testVerifyPayment() {
+            try {
+                const response = await fetch('ajax/wompi_payment.php?action=verify-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ reference: 'TEST-123' })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    markDone('check-verify-payment');
+                } else {
+                    markError('check-verify-payment', data.error);
+                }
+            } catch (e) {
+                markError('check-verify-payment', e.message);
+            }
+        }
+
+        // Ejecutar todas las pruebas
+        async function runAllTests() {
+            testPHP();
+            testWompiPaymentFile();
+            testWompiJS();
+            testPosSale();
+            await new Promise(r => setTimeout(r, 500));
+            testGetConfig();
+            testCreatePayment();
+            testVerifyPayment();
+        }
+
+        // Reiniciar checklist
+        function resetChecklist() {
+            location.reload();
+        }
+
+        // Auto-inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            updateProgress();
+            testWompiJS();
+        });
+    </script>
+</body>
+</html>

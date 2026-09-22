@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body {
+  width: 302px;
+  font-family: monospace;
+  font-size: 10px;
+}
+.center { text-align: center; }
+.line { border-top: 1px dashed #000; margin: 6px 0; }
+.row { display:flex; justify-content:space-between; }
+</style>
+</head>
+<body>
+
+<?php if ($config['logo_ticket_url']): ?>
+<img src="<?= $config['logo_ticket_url'] ?>" width="120">
+<?php endif; ?>
+
+<div class="center">
+<strong><?= $config['razon_social'] ?></strong><br>
+<?= $config['linea_1'] ?><br>
+<?= $config['linea_2'] ?>
+</div>
+
+<div class="line"></div>
+
+<?php foreach ($dte['cuerpoDocumento'] as $item): ?>
+<div class="row">
+  <span><?= $item['descripcion'] ?></span>
+  <span>$<?= number_format($item['ventaTotal'], 2) ?></span>
+</div>
+<?php endforeach; ?>
+
+<div class="line"></div>
+
+<div class="row">
+  <strong>TOTAL</strong>
+  <strong>$<?= number_format($dte['resumen']['totalPagar'], 2) ?></strong>
+</div>
+
+<?php if ($config['mensaje_ticket']): ?>
+<p class="center"><?= $config['mensaje_ticket'] ?></p>
+<?php endif; ?>
+
+<?php if ($config['incluir_qr']): ?>
+<img src="<?= $qrPath ?>" width="120">
+<?php endif; ?>
+
+</body>
+</html>

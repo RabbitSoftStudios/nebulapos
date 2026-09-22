@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+body { font-family: Arial; font-size: 12px; }
+.header { display:flex; justify-content:space-between; }
+table { width:100%; border-collapse:collapse; }
+th, td { border:1px solid #000; padding:4px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="<?= $config['logo_factura_url'] ?>" width="150">
+  <div>
+    <strong><?= $config['razon_social'] ?></strong><br>
+    NIT: <?= $config['nit'] ?>
+  </div>
+</div>
+
+<table>
+<tr>
+  <th>Descripción</th>
+  <th>Total</th>
+</tr>
+
+<?php foreach ($dte['cuerpoDocumento'] as $item): ?>
+<tr>
+  <td><?= $item['descripcion'] ?></td>
+  <td>$<?= number_format($item['ventaTotal'], 2) ?></td>
+</tr>
+<?php endforeach; ?>
+</table>
+
+<p><strong><?= $config['mensaje_factura'] ?></strong></p>
+
+<?php if ($config['firma_digital_url']): ?>
+<img src="<?= $config['firma_digital_url'] ?>" width="<?= $config['tamano_firma'] ?>">
+<?php endif; ?>
+
+<?php if ($config['incluir_qr']): ?>
+<img src="<?= $qrPath ?>" width="120">
+<?php endif; ?>
+
+</body>
+</html>
