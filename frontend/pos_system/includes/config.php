@@ -1,6 +1,7 @@
 <?php
 /**
  * NebulaPOS POS - configuración general local.
+ * No establece conexiones externas; el almacenamiento es SQLite local.
  */
 declare(strict_types=1);
 
@@ -17,3 +18,8 @@ error_reporting($debug ? E_ALL : 0);
 ini_set('display_errors', $debug ? '1' : '0');
 
 require_once __DIR__ . '/config.inc.php';
+
+// Compatibilidad con vistas antiguas: el valor es únicamente un marcador local.
+// El cliente compatible se conecta a SQLite y nunca realiza una llamada remota.
+if (!defined('SUPABASE_URL')) define('SUPABASE_URL', 'sqlite://local');
+if (!defined('SUPABASE_KEY')) define('SUPABASE_KEY', 'local');
