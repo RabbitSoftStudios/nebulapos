@@ -1,17 +1,13 @@
 <?php
-// config.inc.php
+/**
+ * NebulaPOS POS - configuración local SQLite
+ * Team MYTS
+ *
+ * Producción: la base de datos vive fuera del webroot en
+ * /opt/nebulapos/backend/database.sqlite
+ */
 
-// Credenciales de Supabase PostgreSQL (Session Pooler)
-define('DB_HOST', 'aws-0-us-east-2.pooler.supabase.com');
-define('DB_PORT', '5432');
-define('DB_NAME', 'postgres');
-define('DB_USER', 'postgres.iyteellzegojaoozwhev');
-define('DB_PASSWORD', '6QtxhADJfRSci3jF');
-define('POOLED_CONNECTION', true);
-// SSL flexible para desarrollo - no requiere certificado específico
-define('DB_SSL_MODE', 'require');
-
-// Verificar que las constantes estén definidas
-if (!defined('DB_HOST') || !defined('DB_USER') || !defined('DB_PASSWORD')) {
-    die("ERROR: Configuración de PostgreSQL incompleta. Verifica config.inc.php");
-}
+define('DB_DRIVER', 'sqlite');
+define('DB_PATH', getenv('NEBULAPOS_DB_PATH') ?: '/opt/nebulapos/backend/database.sqlite');
+define('POOLED_CONNECTION', false);
+define('DB_SSL_MODE', null);
