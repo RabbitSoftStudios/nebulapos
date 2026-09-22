@@ -1,66 +1,65 @@
 <?php
 /**
- * Sistema POS - Funciones de Autenticación
- * ==========================================
- * Contiene funciones para manejo de sesión y permisos.
- * * @package    POS System
- * @author     Nebula DET Team
- * @version    2.0.0
+ * NebulaPOS POS - autenticación local SQLite.
  */
 
-// Estas funciones dependen de la lógica en login.php y de la sesión.
-// La función `authenticateUser` está definida en `login.php`.
+declare(strict_types=1);
 
-/**
- * Verifica si el usuario está autenticado para acceder al POS.
- */
-function checkPOSAuth() {
-    // Nota: session_start() debe ser llamado antes si no se usa en el index.php
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    
-    if (!isset($_SESSION['pos_authenticated']) || $_SESSION['pos_authenticated'] !== true) {
-        // Redirigir al login usando BASE_URL de forma absoluta
-        header('Location: ' . BASE_URL . '/login'); 
-        exit();
-    }
+require_once __DIR__ . '/pg_connection.php';
 
-    // MODO DEVELOPER: Permitir acceso si es administrador
-    if (isset($_SESSION['cashier']['code']) && $_SESSION['cashier']['code'] === 'ADMIN') {
-        return; // Acceso total concedido
+function checkPOSAuth(): void
+{
+    if (session_status() === PHP_SESSION_NONE) session_start();
+
+    if (empty($_SESSION['pos_authenticated'])) {
+        header('Location: /login.html');
+        exit;
     }
 }
 
-/**
- * Verifica si el usuario está autenticado y tiene permisos de administrador.
- */
-function checkAdminAuth() {
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    
-    if (!isset($_SESSION['pos_authenticated']) || $_SESSION['pos_authenticated'] !== true) {
-        header('Location: ' . BASE_URL . '/login'); 
-        exit();
-    }
-    
-    // Lógica de permisos de administrador simulada
-    $isAdmin = ($_SESSION['cashier']['code'] ?? 'USER') === 'ADMIN'; 
-    
-    if (!$isAdmin) {
-        // Redirigir al POS si no es admin, usando BASE_URL
-        header('Location: ' . BASE_URL . '/pos');
-        exit();
+function checkAdminAuth(): void
+{
+    checkPOSAuth();
+    if (($_SESSION['cashier']['rol'] ?? 'user') !== 'admin') {
+        header('Location: /pos_system/');
+        exit;
     }
 }
 
-/**
- * Simula el registro de un nuevo usuario en Supabase.
- */
-function registerUser($username, $email, $password) {
-    // Implementar lógica de registro en Supabase Auth
-    // return supabase()->auth->signUpWithEmailAndPassword($email, $password);
-    return true; // Simulación
+function registerUser(string $username, string $email, string $password, ?int $companyId = null): array
+{
+    $username = trim($username);
+    $email = strtolower(trim($email));
+
+    if ($username === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 8) {
+        return ['success' => false, 'error' => 'Datos de registro inválidos. La contraseña debe tener al menos 8 caracteres.'];
+    }
+
+    $db = pg_pool();
+    $check = $db->prepare('SELECT id FROM users WHERE lower(email) = lower(?) LIMIT 1');
+    $check->execute([$email]);
+    if ($check->fetch()) return ['success' => false, 'error' => 'El correo ya está registrado.'];
+
+    if ($companyId === null) {
+        $db->beginTransaction();
+        try {
+            $company = $db->prepare('INSERT INTO companies (nombre) VALUES (?)');
+            $company->execute([$username]);
+            $companyId = (int)$db->lastInsertId();
+
+            $stmt = $db->prepare('INSERT INTO users (name,email,password,company_id) VALUES (?,?,?,?)');
+            $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $companyId]);
+            $userId = (int)$db->lastInsertId();
+            $db->commit();
+            return ['success' => true, 'user_id' => $userId, 'company_id' => $companyId];
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) $db->rollBack();
+            error_log('[AUTH] register error: ' . $e->getMessage());
+            return ['success' => false, 'error' => 'No se pudo crear el usuario.'];
+        }
+    }
+
+    $stmt = $db->prepare('INSERT INTO users (name,email,password,company_id) VALUES (?,?,?,?)');
+    $stmt->execute([$username, $email, password_hash($password, PASSWORD_DEFAULT), $companyId]);
+    return ['success' => true, 'user_id' => (int)$db->lastInsertId(), 'company_id' => $companyId];
 }
-?>
