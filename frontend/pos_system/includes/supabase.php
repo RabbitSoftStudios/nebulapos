@@ -19,6 +19,17 @@ final class SupabaseClient
     public function getTableName(): ?string{return $this->table;}
     private function physicalTable():string{$this->requireTable();return self::TABLE_MAP[$this->table]??$this->table;}
 
+    private function tenantId(): ?int
+    {
+        if (session_status() === PHP_SESSION_NONE) @session_start();
+        return !empty($_SESSION['pos_authenticated']) && !empty($_SESSION['empresa_id']) ? (int)$_SESSION['empresa_id'] : null;
+    }
+
+    private function isTenantTable(string $table): bool
+    {
+        return $this->hasColumn($table,'company_id');
+    }
+
     public function select(string $columns='*',array $filters=[],?int $limit=null,?int $offset=null):array{
         $table=$this->physicalTable();$this->ensureTable($table);$filters=$this->scopeFilters($table,$filters);
         $sql='SELECT '.$this->sanitizeColumns($columns).' FROM '.$this->qi($table);$params=[];$where=$this->buildFilters($filters,$params);
@@ -30,8 +41,9 @@ final class SupabaseClient
 
     public function insert(array $data):array{
         $table=$this->physicalTable();$this->ensureTable($table);if(!$data)throw new InvalidArgumentException('Insert data cannot be empty');
-        if($this->hasColumn($table,'company_id')&&!array_key_exists('company_id',$data)&&!empty($_SESSION['empresa_id']))$data['company_id']=(int)$_SESSION['empresa_id'];
-        if($this->hasColumn($table,'empresa_id')&&!array_key_exists('empresa_id',$data)&&!empty($_SESSION['empresa_id']))$data['empresa_id']=(int)$_SESSION['empresa_id'];
+        $tenant=$this->tenantId();
+        if($tenant!==null && $this->isTenantTable($table)) $data['company_id']=$tenant;
+        if($this->hasColumn($table,'empresa_id') && $tenant!==null) $data['empresa_id']=$tenant;
         if(!array_key_exists('id',$data)&&!$this->integerPrimaryKey($table))$data['id']=$this->uuid();
         $this->ensureColumns($table,array_keys($data));$columns=array_keys($data);$params=[];
         foreach($columns as $column)$params[':v_'.$column]=$this->normalize($data[$column]);
@@ -44,6 +56,9 @@ final class SupabaseClient
 
     public function update(array $data,array $filters=[]):array{
         $table=$this->physicalTable();$this->ensureTable($table);if(!$data)return ['success'=>true,'data'=>[],'affected'=>0];
+        $tenant=$this->tenantId();
+        if($tenant!==null && $this->isTenantTable($table)) $data['company_id']=$tenant;
+        if($tenant!==null && $this->hasColumn($table,'empresa_id')) $data['empresa_id']=$tenant;
         $this->ensureColumns($table,array_keys($data));$filters=$this->scopeFilters($table,$filters);$params=[];$sets=[];
         foreach($data as $column=>$value){$p=':set_'.$column;$sets[]=$this->qi($column).'='.$p;$params[$p]=$this->normalize($value);}
         $where=$this->buildFilters($filters,$params);if(!$where)throw new RuntimeException('UPDATE requires filters');
@@ -60,21 +75,27 @@ final class SupabaseClient
 
     public function query(string $sql):array{
         if(preg_match('/\b(jsonb|bigserial|uuid_generate|FOR\s+UPDATE|ILIKE|RETURNING\s+\*)\b/i',$sql))return ['success'=>false,'data'=>[],'error'=>'Consulta PostgreSQL no compatible con SQLite'];
+        // No se permite SQL arbitrario para tablas tenant mientras exista sesión.
+        // Los módulos POS deben utilizar select/insert/update/delete, que aplican el aislamiento.
+        if($this->tenantId()!==null && preg_match('/\b(FROM|UPDATE|INTO|DELETE\s+FROM)\s+([A-Za-z_][A-Za-z0-9_]*)/i',$sql,$m)){
+            $table=$m[2];
+            if($this->tableExists($table) && $this->isTenantTable($table) && !preg_match('/\bcompany_id\s*=\s*/i',$sql))
+                return ['success'=>false,'data'=>[],'error'=>'Consulta SQL sin aislamiento tenant: use la API SQLite del adaptador'];
+        }
         try{$stmt=$this->pdo->query($sql);return ['success'=>true,'data'=>$stmt->fetchAll()];}catch(Throwable $e){return ['success'=>false,'data'=>[],'error'=>$e->getMessage()];}
     }
-    public function insertVenta(array $ventaData):array{$old=$this->table;$this->table='pos_ventas';try{return $this->insert($ventaData);}finally{$this->table=$old;}}
+    public function insertVenta(array $ventaData):array{$old=$this->table;$this->table='pos_ventas';try{return$this->insert($ventaData);}finally{$this->table=$old;}}
     public function insertDTE(array $dteData,?string $usuarioId=null,?string $empresaNit=null):array{
         $codigo=$dteData['identificacion']['codigoGeneracion']??null;if(!$codigo)return ['success'=>false,'error'=>'Código de generación es requerido'];$old=$this->table;$this->table='dte_facturas';
-        try{return $this->insert(['codigo_generacion'=>$codigo,'emisor_nit'=>$empresaNit??($dteData['emisor']['nit']??null),'numero_control'=>$dteData['identificacion']['numeroControl']??null,'tipo_dte'=>$dteData['identificacion']['tipoDte']??'01','fecha_emision'=>($dteData['identificacion']['fecEmi']??date('Y-m-d')).' '.($dteData['identificacion']['horEmi']??date('H:i:s')),'total_pagar'=>$dteData['resumen']['totalPagar']??0,'documento_json'=>json_encode($dteData,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),'estado_firma'=>'pendiente','origen'=>'interno','usuario_id'=>$usuarioId,'metadata'=>json_encode(['empresa_nit'=>$empresaNit],JSON_UNESCAPED_UNICODE)]);}finally{$this->table=$old;}
+        try{return$this->insert(['codigo_generacion'=>$codigo,'emisor_nit'=>$empresaNit??($dteData['emisor']['nit']??null),'numero_control'=>$dteData['identificacion']['numeroControl']??null,'tipo_dte'=>$dteData['identificacion']['tipoDte']??'01','fecha_emision'=>($dteData['identificacion']['fecEmi']??date('Y-m-d')).' '.($dteData['identificacion']['horEmi']??date('H:i:s')),'total_pagar'=>$dteData['resumen']['totalPagar']??0,'documento_json'=>json_encode($dteData,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES),'estado_firma'=>'pendiente','origen'=>'interno','usuario_id'=>$usuarioId,'metadata'=>json_encode(['empresa_nit'=>$empresaNit],JSON_UNESCAPED_UNICODE)]);}finally{$this->table=$old;}
     }
     public function rpc(string $functionName,array $params=[]):array{return ['success'=>false,'data'=>[],'error'=>'RPC externo eliminado: '.$functionName];}
 
     private function scopeFilters(string $table,array $filters):array{
-        if(empty($_SESSION['pos_authenticated'])||empty($_SESSION['empresa_id']))return $filters;
-        $protected=!in_array($table,['users','companies'],true);
-        if(!$protected)return $filters;
-        if($this->hasColumn($table,'company_id')&&!array_key_exists('company_id',$filters))$filters['company_id']=(int)$_SESSION['empresa_id'];
-        elseif($this->hasColumn($table,'empresa_id')&&!array_key_exists('empresa_id',$filters))$filters['empresa_id']=(int)$_SESSION['empresa_id'];
+        $tenant=$this->tenantId();
+        if($tenant===null || !$this->isTenantTable($table)) return $filters;
+        // La sesión siempre gana: nunca se acepta que el caller cambie de empresa.
+        $filters['company_id']=$tenant;
         return $filters;
     }
     private function ensureTable(string $table):void{if(!$this->tableExists($table))$this->pdo->exec('CREATE TABLE '.$this->qi($table).' (id INTEGER PRIMARY KEY AUTOINCREMENT)');}
