@@ -1,330 +1,338 @@
-===== ENVIRONMENT ORION =====
-/etc/orion/orion.env
+AIO_SERVICE]$ echo '===== PHP-FPM LOG ====='
+sudo journalctl -u php-fpm --since "10 minutes ago" --no-pager \
+  | tail -120
 
-===== ORION ENV REFERENCES =====
-/etc/orion/orion.env:3:APP_URL=https://orion.nebuladet.website
-/etc/orion/orion.env:4:ORION_AUTH_DB_DSN=pgsql:host=aws-0-us-east-2.pooler.supabase.com;port=5432;dbname=postgres;sslmode=require
-/etc/orion/orion.env:5:ORION_AUTH_DB_USERNAME=postgres.redacted
-/etc/orion/orion.env:6:ORION_AUTH_DB_PASSWORD=redacted
-[ec2-user@ip-172-31-1-105 ~]$
+echo
+echo '===== NGINX ERROR LOG ====='
+sudo tail -120 /var/log/nginx/error.log
 
+echo
+echo '===== ORION LOGS ====='
+sudo find /home/ec2-user/orion/kernell/storage/logs \
+  -type f -maxdepth 1 -printf '%TY-%Tm-%Td %TH:%TM:%TS %p\n' 2>/dev/null \
+  | sort -r | head -10
+===== PHP-FPM LOG =====
+-- No entries --
 
+===== NGINX ERROR LOG =====
+2026/09/23 17:40:35 [error] 3461396#3461396: *300168 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:40:51 [error] 3461396#3461396: *300171 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //cgi-bin/cgi-bin/cgi-bin/cgi-bin/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:41:04 [error] 3461396#3461396: *300174 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/images/images/images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:41:17 [error] 3461396#3461396: *300177 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/images/images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:41:31 [error] 3461396#3461396: *300180 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:41:43 [error] 3461397#3461397: *300194 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:41:56 [error] 3461397#3461397: *300197 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:42:09 [error] 3461397#3461397: *300200 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //images/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:42:24 [error] 3461397#3461397: *300203 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //wp-content/plugins/plugins/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:42:31 [error] 3461397#3461397: *300206 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //assets/images/images/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:42:47 [error] 3461397#3461397: *300209 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //blogs/media/media/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 17:43:04 [error] 3461396#3461396: *300212 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 152.42.164.85, server: nebuladet.website, request: "GET //cache/cache/cache.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "www.google.com"
+2026/09/23 18:57:29 [error] 3461397#3461397: *300768 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 104.23.223.14, server: nebuladet.website, request: "GET /wp-admin/install.php?step=1 HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website"
+2026/09/23 19:20:27 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /phpmyadmin/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:27 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /phpMyAdmin/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:28 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /PMA/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:29 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /pma/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:30 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /phpMyAdmin-2/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:30 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /phpMyAdmin2/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:31 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /phpmyadmin2/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:31 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /mysql-admin/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:32 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /php-my-admin/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:33 [error] 3461397#3461397: *300814 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /php-myadmin/index.php HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website", referrer: "https://www.sukaharja-rajadesa.desa.id:443/phpmyadmin/"
+2026/09/23 19:20:39 [error] 3461397#3461397: *300825 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /adminer.php?username=postgres HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website"
+2026/09/23 19:20:40 [error] 3461397#3461397: *300825 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /adminer/adminer.php?username=postgres HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website"
+2026/09/23 19:20:43 [error] 3461397#3461397: *300825 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 37.19.210.5, server: nebuladet.website, request: "GET /admin/adminer.php?username=postgres HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website"
+2026/09/23 19:42:54 [warn] 3461396#3461396: *301164 a client request body is buffered to a temporary file /var/lib/nginx/tmp/client_body/0000000148, client: 190.87.160.72, server: nebuladet.website, request: "POST /clients/fagustin/process_bridge.php HTTP/1.1", host: "nebuladet.website", referrer: "https://nebuladet.website/clients/fagustin/factura_pro.php"
+2026/09/23 19:43:11 [notice] 3507816#3507816: signal process started
+2026/09/23 19:43:11 [notice] 3663277#3663277: signal 1 (SIGHUP) received from 3507816, reconfiguring
+2026/09/23 19:43:11 [notice] 3663277#3663277: reconfiguring
+2026/09/23 19:43:11 [notice] 3663277#3663277: using the "epoll" event method
+2026/09/23 19:43:11 [notice] 3663277#3663277: start worker processes
+2026/09/23 19:43:11 [notice] 3663277#3663277: start worker process 3507819
+2026/09/23 19:43:11 [notice] 3663277#3663277: start worker process 3507820
+2026/09/23 19:43:11 [notice] 3461397#3461397: gracefully shutting down
+2026/09/23 19:43:11 [notice] 3461396#3461396: gracefully shutting down
+2026/09/23 19:43:11 [notice] 3461397#3461397: exiting
+2026/09/23 19:43:11 [notice] 3461396#3461396: exiting
+2026/09/23 19:43:11 [notice] 3461397#3461397: exit
+2026/09/23 19:43:11 [notice] 3461396#3461396: exit
+2026/09/23 19:43:11 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3461397
+2026/09/23 19:43:11 [notice] 3663277#3663277: worker process 3461397 exited with code 0
+2026/09/23 19:43:11 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 19:43:11 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3461396
+2026/09/23 19:43:11 [notice] 3663277#3663277: worker process 3461396 exited with code 0
+2026/09/23 19:43:11 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 20:00:06 [notice] 3511313#3511313: signal process started
+2026/09/23 20:00:06 [notice] 3663277#3663277: signal 1 (SIGHUP) received from 3511313, reconfiguring
+2026/09/23 20:00:06 [notice] 3663277#3663277: reconfiguring
+2026/09/23 20:00:06 [notice] 3663277#3663277: using the "epoll" event method
+2026/09/23 20:00:06 [notice] 3663277#3663277: start worker processes
+2026/09/23 20:00:06 [notice] 3663277#3663277: start worker process 3511316
+2026/09/23 20:00:06 [notice] 3663277#3663277: start worker process 3511317
+2026/09/23 20:00:07 [notice] 3507819#3507819: gracefully shutting down
+2026/09/23 20:00:07 [notice] 3507819#3507819: exiting
+2026/09/23 20:00:07 [notice] 3507819#3507819: exit
+2026/09/23 20:00:07 [notice] 3507820#3507820: gracefully shutting down
+2026/09/23 20:00:07 [notice] 3507820#3507820: exiting
+2026/09/23 20:00:07 [notice] 3507820#3507820: exit
+2026/09/23 20:00:07 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3507820
+2026/09/23 20:00:07 [notice] 3663277#3663277: worker process 3507820 exited with code 0
+2026/09/23 20:00:07 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 20:00:07 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3507819
+2026/09/23 20:00:07 [notice] 3663277#3663277: worker process 3507819 exited with code 0
+2026/09/23 20:00:07 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 20:37:59 [notice] 3513527#3513527: signal process started
+2026/09/23 20:37:59 [notice] 3663277#3663277: signal 1 (SIGHUP) received from 3513527, reconfiguring
+2026/09/23 20:37:59 [notice] 3663277#3663277: reconfiguring
+2026/09/23 20:37:59 [notice] 3663277#3663277: using the "epoll" event method
+2026/09/23 20:37:59 [notice] 3663277#3663277: start worker processes
+2026/09/23 20:37:59 [notice] 3663277#3663277: start worker process 3513528
+2026/09/23 20:37:59 [notice] 3663277#3663277: start worker process 3513529
+2026/09/23 20:37:59 [notice] 3511316#3511316: gracefully shutting down
+2026/09/23 20:37:59 [notice] 3511316#3511316: exiting
+2026/09/23 20:37:59 [notice] 3511316#3511316: exit
+2026/09/23 20:37:59 [notice] 3511317#3511317: gracefully shutting down
+2026/09/23 20:37:59 [notice] 3511317#3511317: exiting
+2026/09/23 20:37:59 [notice] 3511317#3511317: exit
+2026/09/23 20:37:59 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3511317
+2026/09/23 20:37:59 [notice] 3663277#3663277: worker process 3511316 exited with code 0
+2026/09/23 20:37:59 [notice] 3663277#3663277: worker process 3511317 exited with code 0
+2026/09/23 20:37:59 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 20:37:59 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3511316
+2026/09/23 20:55:00 [error] 3513528#3513528: *301362 FastCGI sent in stderr: "Primary script unknown" while reading response header from upstream, client: 104.23.223.15, server: nebuladet.website, request: "GET /wp-admin/install.php?step=1 HTTP/1.1", upstream: "fastcgi://unix:/run/php-fpm/www.sock:", host: "nebuladet.website"
+2026/09/23 21:06:05 [notice] 3515150#3515150: signal process started
+2026/09/23 21:06:05 [notice] 3663277#3663277: signal 1 (SIGHUP) received from 3515150, reconfiguring
+2026/09/23 21:06:05 [notice] 3663277#3663277: reconfiguring
+2026/09/23 21:06:05 [notice] 3663277#3663277: using the "epoll" event method
+2026/09/23 21:06:05 [notice] 3663277#3663277: start worker processes
+2026/09/23 21:06:05 [notice] 3663277#3663277: start worker process 3515151
+2026/09/23 21:06:05 [notice] 3663277#3663277: start worker process 3515152
+2026/09/23 21:06:05 [notice] 3513529#3513529: gracefully shutting down
+2026/09/23 21:06:05 [notice] 3513528#3513528: gracefully shutting down
+2026/09/23 21:06:05 [notice] 3513529#3513529: exiting
+2026/09/23 21:06:05 [notice] 3513528#3513528: exiting
+2026/09/23 21:06:05 [notice] 3513529#3513529: exit
+2026/09/23 21:06:05 [notice] 3513528#3513528: exit
+2026/09/23 21:06:05 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3513529
+2026/09/23 21:06:05 [notice] 3663277#3663277: worker process 3513528 exited with code 0
+2026/09/23 21:06:05 [notice] 3663277#3663277: worker process 3513529 exited with code 0
+2026/09/23 21:06:05 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 21:06:05 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3513528
+2026/09/23 22:00:32 [notice] 3520504#3520504: signal process started
+2026/09/23 22:00:32 [notice] 3663277#3663277: signal 1 (SIGHUP) received from 3520504, reconfiguring
+2026/09/23 22:00:32 [notice] 3663277#3663277: reconfiguring
+2026/09/23 22:00:32 [notice] 3663277#3663277: using the "epoll" event method
+2026/09/23 22:00:32 [notice] 3663277#3663277: start worker processes
+2026/09/23 22:00:32 [notice] 3663277#3663277: start worker process 3520526
+2026/09/23 22:00:32 [notice] 3663277#3663277: start worker process 3520529
+2026/09/23 22:00:32 [notice] 3515152#3515152: gracefully shutting down
+2026/09/23 22:00:32 [notice] 3515152#3515152: exiting
+2026/09/23 22:00:32 [notice] 3515152#3515152: exit
+2026/09/23 22:00:32 [notice] 3515151#3515151: gracefully shutting down
+2026/09/23 22:00:32 [notice] 3515151#3515151: exiting
+2026/09/23 22:00:32 [notice] 3515151#3515151: exit
+2026/09/23 22:00:32 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3515151
+2026/09/23 22:00:32 [notice] 3663277#3663277: worker process 3515151 exited with code 0
+2026/09/23 22:00:32 [notice] 3663277#3663277: worker process 3515152 exited with code 0
+2026/09/23 22:00:32 [notice] 3663277#3663277: signal 29 (SIGIO) received
+2026/09/23 22:00:32 [notice] 3663277#3663277: signal 17 (SIGCHLD) received from 3515152
 
- echo '===== ORION DB REFERENCES ====='
+===== ORION LOGS =====
+[ec2-user@ip-172-31-1-105 ZFREEZED_AIO_SERVICE]$
+
+$ echo '===== AUTH ERRORS ====='
 
 sudo grep -RniE \
-    'CREATE TABLE|INSERT INTO|users|usuarios|user_root|root_user|auth_users|password_hash' \
-    /var/www/orion.nebuladet.website \
-    /home/ec2-user/orion \
-    2>/dev/null | head -300
-===== ORION DB REFERENCES =====
-/var/www/orion.nebuladet.website/public/auth_root.php:20:            'user_root'=>['id'=>$user['id']??null,'usuario'=>$user['usuario']??null,'nombre'=>$user['nombres']??null,'email'=>$user['email']??null],
-/var/www/orion.nebuladet.website/public/credito_fiscal.php:73:            $userStmt = $pdo->prepare('SELECT id::text FROM auth.users WHERE email = ? LIMIT 1');
-/var/www/orion.nebuladet.website/public/credito_fiscal.php:74:            $userStmt->execute([$sessionEmail]);
-/var/www/orion.nebuladet.website/public/credito_fiscal.php:75:            $supabaseUserId = $userStmt->fetchColumn() ?: null;
-/var/www/orion.nebuladet.website/public/credito_fiscal.php:77:            error_log('No se pudo resolver auth.users para catalogos CCF: ' . $userLookupError->getMessage());
-/var/www/orion.nebuladet.website/public/factura_pro.php:492:            $users = SupabaseConnector::consultar("dte_usuarios?id=eq.$userId");
-/var/www/orion.nebuladet.website/public/factura_pro.php:493:            $userData = $users[0] ?? null;
-/var/www/orion.nebuladet.website/public/session_manager.php:211:        return self::has('usuario_id') || self::has('user_root');
-/var/www/orion.nebuladet.website/public/session_manager.php:218:        if (self::has('user_root')) {
-/var/www/orion.nebuladet.website/public/session_manager.php:219:            return self::get('user_root');
-/var/www/orion.nebuladet.website/public/app/auth.php:30:        return (array)SessionManager::get('user_root', []);
-/home/ec2-user/orion/backup-20260919-173352/kernell/composer.lock:1060:                    "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/bacon/bacon-qr-code/src/Renderer/Image/SvgImageBackEnd.php:281:        $this->xmlWriter->writeAttribute('gradientUnits', 'userSpaceOnUse');
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/LICENSE:18:free software--to make sure the software is free for all its users.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/LICENSE:61:effectively restrict the users of a free program by obtaining a
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/LICENSE:105:users' freedom, it does ensure that the user of a program that is
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/README.md:87:While installing the entire package manually or with Composer is simple, convenient, and reliable, you may want to include only vital files in your project. At the very least you will need [src/PHPMailer.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/PHPMailer.php). If you're using SMTP, you'll need [src/SMTP.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/SMTP.php), and if you're using POP-before SMTP (*very* unlikely!), you'll need [src/POP3.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/POP3.php). You can skip the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder if you're not showing errors to users and can make do with English-only errors. If you're using XOAUTH2 you will need [src/OAuth.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/OAuth.php) as well as the Composer dependencies for the services you wish to authenticate with. Really, it's much easier to use Composer!
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/composer.json:16:            "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:10: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:179:    //Use this to interact with an API on the users behalf
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/DSNConfigurator.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/Exception.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/OAuth.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/OAuthTokenProvider.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:29: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/POP3.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/POP3.php:40: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:1118:     * will send the message to the users terminal if they are logged
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:709:The diff might look very big but 95% of Guzzle users will be able to upgrade without modification.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1157:  caused problems for many users: they aren't PSR-4 compliant, require an
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1378:* Adding more information to ExceptionCollection exceptions so that users have more context, including a stack trace of
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1489:  Symfony users can still use the old version of Monolog.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/UPGRADING.md:1049:    "description":"Provides access to Zendesk views, groups, tickets, ticket fields, and users",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/guzzlehttp/guzzle/src/Middleware.php:200:        // To be compatible with Guzzle 7.1.x we need to allow users to pass a MessageFormatter
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/DoctrineDbalAdapter.php:271:        $insertSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?)";
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:121:            'mysql' => "CREATE TABLE $this->table ($this->idCol VARBINARY(255) NOT NULL PRIMARY KEY, $this->dataCol MEDIUMBLOB NOT NULL, $this->lifetimeCol INTEGER UNSIGNED, $this->timeCol INTEGER UNSIGNED NOT NULL) ENGINE = InnoDB",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:122:            'sqlite' => "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:123:            'pgsql' => "CREATE TABLE $this->table ($this->idCol VARCHAR(255) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:124:            'oci' => "CREATE TABLE $this->table ($this->idCol VARCHAR2(255) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:125:            'sqlsrv' => "CREATE TABLE $this->table ($this->idCol VARCHAR(255) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:261:        $insertSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time)";
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/polyfill-ctype/README.md:4:This component provides `ctype_*` functions to users who run php versions without the ctype extension.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/validator/ConstraintValidator.php:67:     * should only be displayed for technical users. Non-technical users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:330:            'mysql' => "CREATE TABLE $this->table ($this->idCol VARBINARY(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER UNSIGNED NOT NULL, $this->timeCol INTEGER UNSIGNED NOT NULL) ENGINE = InnoDB",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:331:            'sqlite' => "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:332:            'pgsql' => "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:333:            'oci' => "CREATE TABLE $this->table ($this->idCol VARCHAR2(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:334:            'sqlsrv' => "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:871:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, EMPTY_BLOB(), :expiry, :time) RETURNING $this->dataCol into :data";
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:877:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time)";
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:881:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time)";
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:934:                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time) ".
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:948:                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time) ".
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/EventStreamResponse.php:18: * To broadcast events to multiple users at once, for long-running
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/symfony/http-foundation/Request.php:817:        // the check for $this->session avoids malicious users trying to fake a session cookie with proper name
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/ramsey/collection/src/DoubleEndedQueueInterface.php:157: * do so. Users of any `DoubleEndedQueueInterface` implementations that do allow
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/psr/http-message/src/ServerRequestInterface.php:36: * content, matching authorization headers to users, etc). These parameters
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/psr/http-message/src/UriInterface.php:258:     * Users can provide both encoded and decoded path characters.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/psr/http-message/src/UriInterface.php:273:     * Users can provide both encoded and decoded query characters.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/psr/http-message/src/UriInterface.php:290:     * Users can provide both encoded and decoded fragment characters.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/composer/installed.json:1096:                    "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/CHANGELOG.md:165:array->object/enum changes, but there is no big new feature for end users.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/CHANGELOG.md:409:  * Added ElasticsearchHandler to send records via the official ES library. Elastica users should now use ElasticaHandler instead of ElasticSearchHandler
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/CHANGELOG.md:476:  * Added InsightOpsHandler to migrate users of the LogEntriesHandler
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/CHANGELOG.md:647:  * Added $host to HipChatHandler for users of private instances
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/CHANGELOG.md:741:  * Added support for sending messages to multiple users at once with the PushoverHandler
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PHPConsoleHandler.php:38: *      $logger->debug('SELECT * FROM users', array('db', 'time' => 0.012));
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:31:    private array $users;
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:81:     * @param string|array $users  Pushover user id or array of ids the message will be sent to
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:83:     * @param bool         $useSSL Whether to connect via SSL. Required when pushing messages to users that are not
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:96:     * @phpstan-param string|array<int|string>    $users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:102:        $users,
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:130:        $this->users = (array) $users;
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:199:        foreach ($this->users as $user) {
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/monolog/monolog/src/Monolog/Handler/TelegramBotHandler.php:80:     * Sends the message silently. Users will receive a notification with no sound.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:4268:      * @param mixed $subset if true embed only a subset of the font (stores only the information related to the used characters); if false embed full font; if 'default' uses the default value set using setFontSubsetting(). This option is valid only for TrueTypeUnicode fonts. If you want to enable users to change the document, set this parameter to false. If you subset the font, the person who receives your PDF would need to have your same font in order to make changes to your PDF. The file size of the PDF would also be smaller because you are embedding only part of a font.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:4538:      * @param mixed $subset if true embed only a subset of the font (stores only the information related to the used characters); if false embed full font; if 'default' uses the default value set using setFontSubsetting(). This option is valid only for TrueTypeUnicode fonts. If you want to enable users to change the document, set this parameter to false. If you subset the font, the person who receives your PDF would need to have your same font in order to make changes to your PDF. The file size of the PDF would also be smaller because you are embedding only part of a font.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:11035:     * @param array $permissions the set of permissions (specify the ones you want to block):<ul><li>print : Print the document;</li><li>modify : Modify the contents of the document by operations other than those controlled by 'fill-forms', 'extract' and 'assemble';</li><li>copy : Copy or otherwise extract text and graphics from the document;</li><li>annot-forms : Add or modify text annotations, fill in interactive form fields, and, if 'modify' is also set, create or modify interactive form fields (including signature fields);</li><li>fill-forms : Fill in existing interactive form fields (including signature fields), even if 'annot-forms' is not specified;</li><li>extract : Extract text and graphics (in support of accessibility to users with disabilities or for other purposes);</li><li>assemble : Assemble the document (insert, rotate, or delete pages and create bookmarks or thumbnail images), even if 'modify' is not set;</li><li>print-high : Print the document to a representation from which a faithful digital copy of the PDF content could be generated. When this is not set, printing is limited to a low-level representation of the appearance, possibly of degraded quality.</li><li>owner : (inverted logic - only for public-key) when set permits change of encryption and enables all other permissions.</li></ul>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/CHANGELOG.TXT:224:  - Fixed erase users pictures
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:200:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:228:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:233:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:236:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:242:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:330:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:362:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:375:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:423:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/README.md:20:All users are invited to migrate to [tc-lib-pdf](https://github.com/tecnickcom/tc-lib-pdf), the modern and modular successor.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/AUTHORS:111:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:17:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:45:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:50:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:53:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:59:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:147:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:179:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:192:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:240:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:35:it a lot easier for TeX users to cope with multiple or complex languages,
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:201:users, enthusiasts and software developers for their work in Indian
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:290:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/ChangeLog:440:      to Mac OS 10.6 users, who suffer from a bug.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/ChangeLog:1494:     /pub/users/ucgadkw/indology/software/sinhala1-TeX.zip
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:16:Users of Debian GNU/Linux system will probably want to use the Debian package,
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:29:Users of KDE can install .ttf files on a per-user basis using the KDE
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:71: In order to use OpenType, users of Windows 95, 98 and NT 4.0 can
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:82:depending on whether they should be available to all users on your system
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/AUTHORS:111:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:17:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:45:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:50:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:53:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:59:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:147:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:179:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:192:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:240:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:35:it a lot easier for TeX users to cope with multiple or complex languages,
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:200:users, enthusiasts and software developers for their work in Indian
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:288:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/ChangeLog:5157:       10.6 users, who suffer from a bug.
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/ChangeLog:6670:       /pub/users/ucgadkw/indology/software/sinhala1-TeX.zip The hope is
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:21:Users of Debian GNU/Linux system will probably want to use the Debian package,
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:30:Users of KDE can install .ttf files on a per-user basis using the KDE
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:80: In order to use OpenType, users of Windows 95, 98 and NT 4.0 can
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:94:depending on whether they should be available to all users on your system
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/ae_fonts_2.0/COPYING:16:software--to make sure the software is free for all its users.  This
-/home/ec2-user/orion/backup-20260919-173352/kernell/vendor/tecnickcom/tcpdf/fonts/ae_fonts_2.0/COPYING:110:    a warranty) and that users may redistribute the program under
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Core/Database/QueryBuilder.php:94:        $stmt = $this->db->prepare("INSERT INTO {$this->table} ({$columns}) VALUES ({$values})");
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/Auth/LoginServide.php:30:            'SELECT * FROM usuarios WHERE email = :email AND activo = 1 LIMIT 1'
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/Auth/LoginServide.php:39:        if (!password_verify($password, (string) ($user['password_hash'] ?? ''))) {
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/Auth/RefreshTokenService.php:22:            'INSERT INTO user_sessions
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/Auth/RefreshTokenService.php:45:             INNER JOIN usuarios u ON u.usuario_id = us.usuario_id
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/DTE/DteTenantConfigurationWriter.php:66:        $sql = 'INSERT INTO tenant_dte_configurations
-/home/ec2-user/orion/backup-20260919-173352/kernell/app/Services/Queue/QueueDispatcher.php:32:            'INSERT INTO background_jobs
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/Auth/LoginServide.php:30:            'SELECT * FROM usuarios WHERE email = :email AND activo = 1 LIMIT 1'
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/Auth/LoginServide.php:39:        if (!password_verify($password, (string) ($user['password_hash'] ?? ''))) {
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/Auth/RefreshTokenService.php:22:            'INSERT INTO user_sessions
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/Auth/RefreshTokenService.php:45:             INNER JOIN usuarios u ON u.usuario_id = us.usuario_id
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/DTE/DteTenantConfigurationWriter.php:66:        $sql = 'INSERT INTO tenant_dte_configurations
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Services/Queue/QueueDispatcher.php:32:            'INSERT INTO background_jobs
-/home/ec2-user/orion/backup-20260919-174130/kernell/app/Core/Database/QueryBuilder.php:94:        $stmt = $this->db->prepare("INSERT INTO {$this->table} ({$columns}) VALUES ({$values})");
-/home/ec2-user/orion/backup-20260919-174130/kernell/composer.lock:1060:                    "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/CHANGELOG.md:165:array->object/enum changes, but there is no big new feature for end users.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/CHANGELOG.md:409:  * Added ElasticsearchHandler to send records via the official ES library. Elastica users should now use ElasticaHandler instead of ElasticSearchHandler
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/CHANGELOG.md:476:  * Added InsightOpsHandler to migrate users of the LogEntriesHandler
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/CHANGELOG.md:647:  * Added $host to HipChatHandler for users of private instances
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/CHANGELOG.md:741:  * Added support for sending messages to multiple users at once with the PushoverHandler
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PHPConsoleHandler.php:38: *      $logger->debug('SELECT * FROM users', array('db', 'time' => 0.012));
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:31:    private array $users;
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:81:     * @param string|array $users  Pushover user id or array of ids the message will be sent to
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:83:     * @param bool         $useSSL Whether to connect via SSL. Required when pushing messages to users that are not
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:96:     * @phpstan-param string|array<int|string>    $users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:102:        $users,
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:130:        $this->users = (array) $users;
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/PushoverHandler.php:199:        foreach ($this->users as $user) {
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/monolog/monolog/src/Monolog/Handler/TelegramBotHandler.php:80:     * Sends the message silently. Users will receive a notification with no sound.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:16:Users of Debian GNU/Linux system will probably want to use the Debian package,
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:29:Users of KDE can install .ttf files on a per-user basis using the KDE
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:71: In order to use OpenType, users of Windows 95, 98 and NT 4.0 can
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/INSTALL:82:depending on whether they should be available to all users on your system
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/AUTHORS:111:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:17:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:45:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:50:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:53:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:59:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:147:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:179:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:192:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/COPYING:240:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:35:it a lot easier for TeX users to cope with multiple or complex languages,
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:201:users, enthusiasts and software developers for their work in Indian
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/CREDITS:290:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/ChangeLog:440:      to Mac OS 10.6 users, who suffer from a bug.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20100919/ChangeLog:1494:     /pub/users/ucgadkw/indology/software/sinhala1-TeX.zip
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/ae_fonts_2.0/COPYING:16:software--to make sure the software is free for all its users.  This
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/ae_fonts_2.0/COPYING:110:    a warranty) and that users may redistribute the program under
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/AUTHORS:111:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:17:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:45:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:50:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:53:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:59:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:147:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:179:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:192:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/COPYING:240:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:35:it a lot easier for TeX users to cope with multiple or complex languages,
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:200:users, enthusiasts and software developers for their work in Indian
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/CREDITS:288:* Maxim Iorsh <iorsh AT users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/ChangeLog:5157:       10.6 users, who suffer from a bug.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/ChangeLog:6670:       /pub/users/ucgadkw/indology/software/sinhala1-TeX.zip The hope is
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:21:Users of Debian GNU/Linux system will probably want to use the Debian package,
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:30:Users of KDE can install .ttf files on a per-user basis using the KDE
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:80: In order to use OpenType, users of Windows 95, 98 and NT 4.0 can
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/fonts/freefont-20120503/INSTALL:94:depending on whether they should be available to all users on your system
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/CHANGELOG.TXT:224:  - Fixed erase users pictures
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:200:software for all its users.  We, the Free Software Foundation, use the
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:228:that there is no warranty for this free software.  For both users' and
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:233:  Some devices are designed to deny users access to install or run
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:236:protecting users' freedom to change the software.  The systematic
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:242:of the GPL, as needed to protect the freedom of users.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:330:  The Corresponding Source need not include anything that users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:362:  3. Protecting Users' Legal Rights From Anti-Circumvention Law.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:375:users, your or third parties' legal rights to forbid circumvention of
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/LICENSE.TXT:423:used to limit the access or legal rights of the compilation's users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/README.md:20:All users are invited to migrate to [tc-lib-pdf](https://github.com/tecnickcom/tc-lib-pdf), the modern and modular successor.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:4268:      * @param mixed $subset if true embed only a subset of the font (stores only the information related to the used characters); if false embed full font; if 'default' uses the default value set using setFontSubsetting(). This option is valid only for TrueTypeUnicode fonts. If you want to enable users to change the document, set this parameter to false. If you subset the font, the person who receives your PDF would need to have your same font in order to make changes to your PDF. The file size of the PDF would also be smaller because you are embedding only part of a font.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:4538:      * @param mixed $subset if true embed only a subset of the font (stores only the information related to the used characters); if false embed full font; if 'default' uses the default value set using setFontSubsetting(). This option is valid only for TrueTypeUnicode fonts. If you want to enable users to change the document, set this parameter to false. If you subset the font, the person who receives your PDF would need to have your same font in order to make changes to your PDF. The file size of the PDF would also be smaller because you are embedding only part of a font.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/tecnickcom/tcpdf/tcpdf.php:11035:     * @param array $permissions the set of permissions (specify the ones you want to block):<ul><li>print : Print the document;</li><li>modify : Modify the contents of the document by operations other than those controlled by 'fill-forms', 'extract' and 'assemble';</li><li>copy : Copy or otherwise extract text and graphics from the document;</li><li>annot-forms : Add or modify text annotations, fill in interactive form fields, and, if 'modify' is also set, create or modify interactive form fields (including signature fields);</li><li>fill-forms : Fill in existing interactive form fields (including signature fields), even if 'annot-forms' is not specified;</li><li>extract : Extract text and graphics (in support of accessibility to users with disabilities or for other purposes);</li><li>assemble : Assemble the document (insert, rotate, or delete pages and create bookmarks or thumbnail images), even if 'modify' is not set;</li><li>print-high : Print the document to a representation from which a faithful digital copy of the PDF content could be generated. When this is not set, printing is limited to a low-level representation of the appearance, possibly of degraded quality.</li><li>owner : (inverted logic - only for public-key) when set permits change of encryption and enables all other permissions.</li></ul>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/composer/installed.json:1096:                    "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/bacon/bacon-qr-code/src/Renderer/Image/SvgImageBackEnd.php:281:        $this->xmlWriter->writeAttribute('gradientUnits', 'userSpaceOnUse');
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:709:The diff might look very big but 95% of Guzzle users will be able to upgrade without modification.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1157:  caused problems for many users: they aren't PSR-4 compliant, require an
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1378:* Adding more information to ExceptionCollection exceptions so that users have more context, including a stack trace of
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1489:  Symfony users can still use the old version of Monolog.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/UPGRADING.md:1049:    "description":"Provides access to Zendesk views, groups, tickets, ticket fields, and users",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/guzzlehttp/guzzle/src/Middleware.php:200:        // To be compatible with Guzzle 7.1.x we need to allow users to pass a MessageFormatter
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/DSNConfigurator.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/Exception.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/OAuth.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/OAuthTokenProvider.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:29: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/POP3.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/POP3.php:40: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:1118:     * will send the message to the users terminal if they are logged
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/LICENSE:18:free software--to make sure the software is free for all its users.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/LICENSE:61:effectively restrict the users of a free program by obtaining a
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/LICENSE:105:users' freedom, it does ensure that the user of a program that is
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/README.md:87:While installing the entire package manually or with Composer is simple, convenient, and reliable, you may want to include only vital files in your project. At the very least you will need [src/PHPMailer.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/PHPMailer.php). If you're using SMTP, you'll need [src/SMTP.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/SMTP.php), and if you're using POP-before SMTP (*very* unlikely!), you'll need [src/POP3.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/POP3.php). You can skip the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder if you're not showing errors to users and can make do with English-only errors. If you're using XOAUTH2 you will need [src/OAuth.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/OAuth.php) as well as the Composer dependencies for the services you wish to authenticate with. Really, it's much easier to use Composer!
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/composer.json:16:            "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:10: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:179:    //Use this to interact with an API on the users behalf
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/ramsey/collection/src/DoubleEndedQueueInterface.php:157: * do so. Users of any `DoubleEndedQueueInterface` implementations that do allow
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/validator/ConstraintValidator.php:67:     * should only be displayed for technical users. Non-technical users
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/DoctrineDbalAdapter.php:271:        $insertSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?)";
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:121:            'mysql' => "CREATE TABLE $this->table ($this->idCol VARBINARY(255) NOT NULL PRIMARY KEY, $this->dataCol MEDIUMBLOB NOT NULL, $this->lifetimeCol INTEGER UNSIGNED, $this->timeCol INTEGER UNSIGNED NOT NULL) ENGINE = InnoDB",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:122:            'sqlite' => "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:123:            'pgsql' => "CREATE TABLE $this->table ($this->idCol VARCHAR(255) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:124:            'oci' => "CREATE TABLE $this->table ($this->idCol VARCHAR2(255) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:125:            'sqlsrv' => "CREATE TABLE $this->table ($this->idCol VARCHAR(255) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:261:        $insertSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :lifetime, :time)";
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/EventStreamResponse.php:18: * To broadcast events to multiple users at once, for long-running
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Request.php:817:        // the check for $this->session avoids malicious users trying to fake a session cookie with proper name
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:330:            'mysql' => "CREATE TABLE $this->table ($this->idCol VARBINARY(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER UNSIGNED NOT NULL, $this->timeCol INTEGER UNSIGNED NOT NULL) ENGINE = InnoDB",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:331:            'sqlite' => "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:332:            'pgsql' => "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol BYTEA NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:333:            'oci' => "CREATE TABLE $this->table ($this->idCol VARCHAR2(128) NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:334:            'sqlsrv' => "CREATE TABLE $this->table ($this->idCol VARCHAR(128) NOT NULL PRIMARY KEY, $this->dataCol VARBINARY(MAX) NOT NULL, $this->lifetimeCol INTEGER NOT NULL, $this->timeCol INTEGER NOT NULL)",
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:871:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, EMPTY_BLOB(), :expiry, :time) RETURNING $this->dataCol into :data";
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:877:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time)";
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:881:                $sql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time)";
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:934:                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time) ".
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/http-foundation/Session/Storage/Handler/PdoSessionHandler.php:948:                $mergeSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (:id, :data, :expiry, :time) ".
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/symfony/polyfill-ctype/README.md:4:This component provides `ctype_*` functions to users who run php versions without the ctype extension.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/psr/http-message/src/ServerRequestInterface.php:36: * content, matching authorization headers to users, etc). These parameters
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/psr/http-message/src/UriInterface.php:258:     * Users can provide both encoded and decoded path characters.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/psr/http-message/src/UriInterface.php:273:     * Users can provide both encoded and decoded query characters.
-/home/ec2-user/orion/backup-20260919-174130/kernell/vendor/psr/http-message/src/UriInterface.php:290:     * Users can provide both encoded and decoded fragment characters.
-/home/ec2-user/orion/backup-20260920-044205/kernell/composer.lock:1060:                    "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Core/Database/QueryBuilder.php:94:        $stmt = $this->db->prepare("INSERT INTO {$this->table} ({$columns}) VALUES ({$values})");
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/DTE/DteTenantConfigurationWriter.php:66:        $sql = 'INSERT INTO tenant_dte_configurations
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/Queue/QueueDispatcher.php:32:            'INSERT INTO background_jobs
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/Auth/LoginServide.php:30:            'SELECT * FROM usuarios WHERE email = :email AND activo = 1 LIMIT 1'
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/Auth/LoginServide.php:39:        if (!password_verify($password, (string) ($user['password_hash'] ?? ''))) {
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/Auth/RefreshTokenService.php:22:            'INSERT INTO user_sessions
-/home/ec2-user/orion/backup-20260920-044205/kernell/app/Services/Auth/RefreshTokenService.php:45:             INNER JOIN usuarios u ON u.usuario_id = us.usuario_id
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/DSNConfigurator.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/Exception.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/OAuth.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/OAuthTokenProvider.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/PHPMailer.php:29: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/POP3.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/POP3.php:40: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:11: * @author    Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/src/SMTP.php:1118:     * will send the message to the users terminal if they are logged
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/LICENSE:18:free software--to make sure the software is free for all its users.
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/LICENSE:61:effectively restrict the users of a free program by obtaining a
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/LICENSE:105:users' freedom, it does ensure that the user of a program that is
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/README.md:87:While installing the entire package manually or with Composer is simple, convenient, and reliable, you may want to include only vital files in your project. At the very least you will need [src/PHPMailer.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/PHPMailer.php). If you're using SMTP, you'll need [src/SMTP.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/SMTP.php), and if you're using POP-before SMTP (*very* unlikely!), you'll need [src/POP3.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/POP3.php). You can skip the [language](https://github.com/PHPMailer/PHPMailer/tree/master/language/) folder if you're not showing errors to users and can make do with English-only errors. If you're using XOAUTH2 you will need [src/OAuth.php](https://github.com/PHPMailer/PHPMailer/tree/master/src/OAuth.php) as well as the Composer dependencies for the services you wish to authenticate with. Really, it's much easier to use Composer!
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/composer.json:16:            "email": "codeworxtech@users.sourceforge.net"
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:10: * @author Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net>
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/phpmailer/phpmailer/get_oauth_token.php:179:    //Use this to interact with an API on the users behalf
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:709:The diff might look very big but 95% of Guzzle users will be able to upgrade without modification.
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1157:  caused problems for many users: they aren't PSR-4 compliant, require an
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1378:* Adding more information to ExceptionCollection exceptions so that users have more context, including a stack trace of
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/CHANGELOG.md:1489:  Symfony users can still use the old version of Monolog.
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/UPGRADING.md:1049:    "description":"Provides access to Zendesk views, groups, tickets, ticket fields, and users",
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/guzzlehttp/guzzle/src/Middleware.php:200:        // To be compatible with Guzzle 7.1.x we need to allow users to pass a MessageFormatter
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/ramsey/collection/src/DoubleEndedQueueInterface.php:157: * do so. Users of any `DoubleEndedQueueInterface` implementations that do allow
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/symfony/cache/Adapter/DoctrineDbalAdapter.php:271:        $insertSql = "INSERT INTO $this->table ($this->idCol, $this->dataCol, $this->lifetimeCol, $this->timeCol) VALUES (?, ?, ?, ?)";
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:121:            'mysql' => "CREATE TABLE $this->table ($this->idCol VARBINARY(255) NOT NULL PRIMARY KEY, $this->dataCol MEDIUMBLOB NOT NULL, $this->lifetimeCol INTEGER UNSIGNED, $this->timeCol INTEGER UNSIGNED NOT NULL) ENGINE = InnoDB",
-/home/ec2-user/orion/backup-20260920-044205/kernell/vendor/symfony/cache/Adapter/PdoAdapter.php:122:            'sqlite' => "CREATE TABLE $this->table ($this->idCol TEXT NOT NULL PRIMARY KEY, $this->dataCol BLOB NOT NULL, $this->lifetimeCol INTEGER, $this->timeCol INTEGER NOT NULL)",
-[ec2-user@ip-172-31-1-105 ~]$
+  'auth|authentication|PDO|database|exception|fatal|LoginService|No fue posible procesar' \
+  /home/ec2-user/orion/kernell/storage/logs \
+  /var/log/php-fpm \
+  /var/log/nginx \
+  2>/dev/null \
+  | tail -150
+===== AUTH ERRORS =====
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2871:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /public/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2872:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /web/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2873:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2874:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /config/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2875:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /root/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2880:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /srv/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2881:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /htdocs/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2882:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /files/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2883:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /backup/.config/codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2884:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /backup/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2885:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /var/www/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2886:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /wwwroot/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2887:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /opt/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2888:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /uploads/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2889:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /tmp/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2890:34.92.32.76 - - [22/Sep/2026:11:38:51 +0000] "GET /home/.codex/auth.json HTTP/1.1" 404 153 "-" "crusader-worker/1.0"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:2969:34.140.132.132 - - [22/Sep/2026:11:45:15 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3037:34.140.132.132 - - [22/Sep/2026:11:45:15 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3038:34.140.132.132 - - [22/Sep/2026:11:45:15 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3056:34.140.132.132 - - [22/Sep/2026:11:45:15 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3241:34.52.229.253 - - [22/Sep/2026:11:46:09 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3308:34.52.229.253 - - [22/Sep/2026:11:46:09 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3309:34.52.229.253 - - [22/Sep/2026:11:46:09 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3328:34.52.229.253 - - [22/Sep/2026:11:46:10 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3513:35.241.239.86 - - [22/Sep/2026:12:02:34 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3580:35.241.239.86 - - [22/Sep/2026:12:02:34 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3581:35.241.239.86 - - [22/Sep/2026:12:02:34 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3600:35.241.239.86 - - [22/Sep/2026:12:02:34 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3794:34.52.133.111 - - [22/Sep/2026:13:24:23 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3860:34.52.133.111 - - [22/Sep/2026:13:24:24 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3861:34.52.133.111 - - [22/Sep/2026:13:24:24 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:3881:34.52.133.111 - - [22/Sep/2026:13:24:24 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4067:34.140.132.132 - - [22/Sep/2026:13:35:37 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4133:34.140.132.132 - - [22/Sep/2026:13:35:37 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4134:34.140.132.132 - - [22/Sep/2026:13:35:37 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4154:34.140.132.132 - - [22/Sep/2026:13:35:37 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4247:34.140.132.132 - - [22/Sep/2026:13:35:38 +0000] "GET /database.zip HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4344:34.77.137.207 - - [22/Sep/2026:14:31:22 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4411:34.77.137.207 - - [22/Sep/2026:14:31:23 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4412:34.77.137.207 - - [22/Sep/2026:14:31:23 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4431:34.77.137.207 - - [22/Sep/2026:14:31:23 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4614:34.52.133.111 - - [22/Sep/2026:14:41:02 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4681:34.52.133.111 - - [22/Sep/2026:14:41:02 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4683:34.52.133.111 - - [22/Sep/2026:14:41:02 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4701:34.52.133.111 - - [22/Sep/2026:14:41:03 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4887:34.156.22.151 - - [22/Sep/2026:14:53:53 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4953:34.156.22.151 - - [22/Sep/2026:14:53:53 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4954:34.156.22.151 - - [22/Sep/2026:14:53:53 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:4973:34.156.22.151 - - [22/Sep/2026:14:53:53 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5157:35.241.202.92 - - [22/Sep/2026:15:13:13 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5224:35.241.202.92 - - [22/Sep/2026:15:13:14 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5226:35.241.202.92 - - [22/Sep/2026:15:13:14 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5244:35.241.202.92 - - [22/Sep/2026:15:13:14 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5429:34.38.113.44 - - [22/Sep/2026:15:21:22 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5495:34.38.113.44 - - [22/Sep/2026:15:21:22 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5496:34.38.113.44 - - [22/Sep/2026:15:21:22 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5515:34.38.113.44 - - [22/Sep/2026:15:21:23 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5704:34.156.249.47 - - [22/Sep/2026:16:04:53 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5771:34.156.249.47 - - [22/Sep/2026:16:04:54 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5774:34.156.249.47 - - [22/Sep/2026:16:04:54 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5792:34.156.249.47 - - [22/Sep/2026:16:04:54 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:5979:34.156.249.47 - - [22/Sep/2026:16:38:53 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6046:34.156.249.47 - - [22/Sep/2026:16:38:54 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6047:34.156.249.47 - - [22/Sep/2026:16:38:54 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6066:34.156.249.47 - - [22/Sep/2026:16:38:54 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6256:34.52.229.253 - - [22/Sep/2026:17:50:50 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6322:34.52.229.253 - - [22/Sep/2026:17:50:50 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6323:34.52.229.253 - - [22/Sep/2026:17:50:50 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6343:34.52.229.253 - - [22/Sep/2026:17:50:51 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6442:34.52.229.253 - - [22/Sep/2026:17:50:52 +0000] "GET /oauth-credentials.json HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6535:34.140.132.132 - - [22/Sep/2026:18:50:40 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6601:34.140.132.132 - - [22/Sep/2026:18:50:41 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6602:34.140.132.132 - - [22/Sep/2026:18:50:41 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6622:34.140.132.132 - - [22/Sep/2026:18:50:41 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6809:34.140.234.80 - - [22/Sep/2026:18:50:52 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6876:34.140.234.80 - - [22/Sep/2026:18:50:53 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6877:34.140.234.80 - - [22/Sep/2026:18:50:53 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:6896:34.140.234.80 - - [22/Sep/2026:18:50:53 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7087:34.52.146.37 - - [22/Sep/2026:19:51:53 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7154:34.52.146.37 - - [22/Sep/2026:19:51:53 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7156:34.52.146.37 - - [22/Sep/2026:19:51:53 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7175:34.52.146.37 - - [22/Sep/2026:19:51:54 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7359:34.140.234.80 - - [22/Sep/2026:19:53:35 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7426:34.140.234.80 - - [22/Sep/2026:19:53:35 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7427:34.140.234.80 - - [22/Sep/2026:19:53:35 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7446:34.140.234.80 - - [22/Sep/2026:19:53:35 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7631:34.52.229.253 - - [22/Sep/2026:20:03:41 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7699:34.52.229.253 - - [22/Sep/2026:20:03:42 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7700:34.52.229.253 - - [22/Sep/2026:20:03:42 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7735:34.52.229.253 - - [22/Sep/2026:20:03:42 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7865:35.240.58.49 - - [22/Sep/2026:20:03:42 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7969:35.240.58.49 - - [22/Sep/2026:20:03:43 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7970:35.240.58.49 - - [22/Sep/2026:20:03:43 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:7988:35.240.58.49 - - [22/Sep/2026:20:03:43 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8172:34.77.137.207 - - [22/Sep/2026:20:05:19 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8238:34.77.137.207 - - [22/Sep/2026:20:05:20 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8239:34.77.137.207 - - [22/Sep/2026:20:05:20 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8259:34.77.137.207 - - [22/Sep/2026:20:05:20 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8442:35.240.100.200 - - [22/Sep/2026:20:39:10 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8508:35.240.100.200 - - [22/Sep/2026:20:39:10 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8509:35.240.100.200 - - [22/Sep/2026:20:39:10 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8529:35.240.100.200 - - [22/Sep/2026:20:39:10 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8719:34.77.137.207 - - [22/Sep/2026:20:46:02 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8786:34.77.137.207 - - [22/Sep/2026:20:46:03 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8787:34.77.137.207 - - [22/Sep/2026:20:46:03 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8806:34.77.137.207 - - [22/Sep/2026:20:46:03 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:8992:34.140.234.80 - - [22/Sep/2026:20:59:03 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9059:34.140.234.80 - - [22/Sep/2026:20:59:04 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9060:34.140.234.80 - - [22/Sep/2026:20:59:04 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9079:34.140.234.80 - - [22/Sep/2026:20:59:04 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9164:34.140.234.80 - - [22/Sep/2026:20:59:04 +0000] "GET /auth.json HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9179:34.140.234.80 - - [22/Sep/2026:20:59:04 +0000] "GET /storage/oauth-public.key HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9268:34.156.206.32 - - [22/Sep/2026:21:06:29 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9334:34.156.206.32 - - [22/Sep/2026:21:06:29 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9335:34.156.206.32 - - [22/Sep/2026:21:06:29 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9354:34.156.206.32 - - [22/Sep/2026:21:06:29 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9542:35.240.100.200 - - [22/Sep/2026:21:29:40 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9608:35.240.100.200 - - [22/Sep/2026:21:29:40 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9609:35.240.100.200 - - [22/Sep/2026:21:29:40 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9629:35.240.100.200 - - [22/Sep/2026:21:29:40 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9815:34.77.137.207 - - [22/Sep/2026:21:35:58 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9882:34.77.137.207 - - [22/Sep/2026:21:35:58 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9883:34.77.137.207 - - [22/Sep/2026:21:35:58 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:9902:34.77.137.207 - - [22/Sep/2026:21:35:59 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10085:35.241.202.92 - - [22/Sep/2026:21:43:06 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10152:35.241.202.92 - - [22/Sep/2026:21:43:07 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10153:35.241.202.92 - - [22/Sep/2026:21:43:07 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10172:35.241.202.92 - - [22/Sep/2026:21:43:07 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10356:34.140.132.132 - - [22/Sep/2026:21:45:55 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10422:34.140.132.132 - - [22/Sep/2026:21:45:55 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10423:34.140.132.132 - - [22/Sep/2026:21:45:55 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10443:34.140.132.132 - - [22/Sep/2026:21:45:56 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10630:35.240.58.49 - - [22/Sep/2026:21:55:16 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10696:35.240.58.49 - - [22/Sep/2026:21:55:16 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10697:35.240.58.49 - - [22/Sep/2026:21:55:16 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10717:35.240.58.49 - - [22/Sep/2026:21:55:16 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10907:35.240.100.200 - - [22/Sep/2026:23:08:07 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10974:35.240.100.200 - - [22/Sep/2026:23:08:07 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10975:35.240.100.200 - - [22/Sep/2026:23:08:07 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:10994:35.240.100.200 - - [22/Sep/2026:23:08:07 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11183:34.156.206.32 - - [22/Sep/2026:23:14:44 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11250:34.156.206.32 - - [22/Sep/2026:23:14:45 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11251:34.156.206.32 - - [22/Sep/2026:23:14:45 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11270:34.156.206.32 - - [22/Sep/2026:23:14:45 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11353:34.156.206.32 - - [22/Sep/2026:23:14:47 +0000] "GET /database.bak HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11454:207.175.220.59 - - [22/Sep/2026:23:56:22 +0000] "GET /.ssh/authorized_keys HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11521:207.175.220.59 - - [22/Sep/2026:23:56:23 +0000] "GET /config/database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11522:207.175.220.59 - - [22/Sep/2026:23:56:23 +0000] "GET /config/databases.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11541:207.175.220.59 - - [22/Sep/2026:23:56:23 +0000] "GET /database.sql HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+/var/log/nginx/agromarket.nebuladet.website-access.log-20260923:11632:207.175.220.59 - - [22/Sep/2026:23:56:24 +0000] "GET /database.yml HTTP/2.0" 404 153 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+[ec2-user@ip-172-31-1-105 ZFREEZED_AIO_SERVICE]$
 
 
 
-[ec2-user@ip-172-31-1-105 ~]$ echo '===== MYSQL DATABASES ====='
+REEZED_AIO_SERVICE]$ echo '===== ORION ENV KEYS ====='
 
-sudo mysql -NBe 'SHOW DATABASES;' 2>/dev/null
-===== MYSQL DATABASES =====
-[ec2-user@ip-172-31-1-105 ~]$
+sudo awk -F= '
+/^[A-Za-z_][A-Za-z0-9_]*=/ {
+    key=$1
+    if (key ~ /PASSWORD|SECRET|KEY|TOKEN/) {
+        print key "=<REDACTED>"
+    } else {
+        print key "=<SET>"
+    }
+}' /home/ec2-user/orion/kernell/.env
+===== ORION ENV KEYS =====
+APP_ENV=<SET>
+APP_DEBUG=<SET>
+APP_URL=<SET>
+ORION_AUTH_DB_DSN=<SET>
+ORION_AUTH_DB_USERNAME=<SET>
+ORION_AUTH_DB_PASSWORD=<REDACTED>
+JWT_SECRET=<REDACTED>
+[ec2-user@ip-172-31-1-105 ZFREEZED_AIO_SERVICE]$
+
+
+
+E]$ echo '===== PRODUCTION ENV PERMISSIONS ====='
+sudo ls -l /etc/orion/orion.env
+sudo ls -l /home/ec2-user/orion/kernell/.env
+===== PRODUCTION ENV PERMISSIONS =====
+-rw-r-----. 1 root nginx 351 Sep 20 06:42 /etc/orion/orion.env
+-rw-r-----. 1 ec2-user nginx 351 Sep 23 22:00 /home/ec2-user/orion/kernell/.env
+[ec2-user@ip-172-31-1-105 ZFREEZED_AIO_SERVICE]$
+
+
 
