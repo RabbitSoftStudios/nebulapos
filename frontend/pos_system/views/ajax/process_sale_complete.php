@@ -18,10 +18,19 @@ error_reporting(E_ALL);
 ini_set('display_errors', '0');
 
 require_once __DIR__ . '/../../includes/config.php';
+require_once __DIR__ . '/../../includes/auth.php';
 require_once __DIR__ . '/../../includes/supabase.php';
 require_once __DIR__ . '/../../includes/pg_connection.php';
 require_once __DIR__ . '/../../includes/signer/utils/audit_logger.php';
 require_once __DIR__ . '/../../includes/signer/utils/dte_validator_new.php';
+
+checkPOSAuth();
+$companyId = (int)($_SESSION['empresa_id'] ?? 0);
+if ($companyId <= 0) {
+    ob_clean();
+    echo json_encode(['success' => false, 'error' => 'Sesión sin empresa asociada.']);
+    exit;
+}
 
 $dteData = json_decode(file_get_contents('php://input'), true);
 if (!$dteData || empty($dteData['identificacion']['codigoGeneracion'])) {
@@ -39,10 +48,9 @@ try {
     if (!is_db_connected($pdo)) throw new Exception('Database connection unavailable. Please try again.');
     $pdo->beginTransaction();
 
-    // SQLite no soporta FOR UPDATE ni el operador PostgreSQL ~. La secuencia
-    // se calcula dentro de la transacción local.
-    $stmt = $pdo->prepare("SELECT COALESCE(MAX(CAST(RIGHT(numero_control, 15) AS INTEGER)), 0) + 1 AS next_num FROM dte_facturas WHERE tipo_dte = :tipo AND numero_control IS NOT NULL AND LENGTH(numero_control) >= 15");
-    $stmt->execute([':tipo' => $tipoDte]);
+    // La secuencia de control es independiente por empresa y tipo de DTE.
+    $stmt = $pdo->prepare("SELECT COALESCE(MAX(CAST(RIGHT(numero_control, 15) AS INTEGER)), 0) + 1 AS next_num FROM dte_facturas WHERE company_id = :company AND tipo_dte = :tipo AND numero_control IS NOT NULL AND LENGTH(numero_control) >= 15");
+    $stmt->execute([':company' => $companyId, ':tipo' => $tipoDte]);
     $row = $stmt->fetch();
     $secuencial = str_pad((string)($row['next_num'] ?? 1), 15, '0', STR_PAD_LEFT);
     $numeroControl = "DTE-{$tipoDte}-P001M001-{$secuencial}";
@@ -56,13 +64,15 @@ try {
         exit;
     }
 
-    error_log('DTE VALIDATION PASSED for codigoGeneracion: ' . $codigoGeneracion . ' | numeroControl: ' . $numeroControl);
+    error_log('DTE VALIDATION PASSED for codigoGeneracion: ' . $codigoGeneracion . ' | numeroControl: ' . $numeroControl . ' | company_id: ' . $companyId);
     $dir = __DIR__ . '/../../storage/sigs/';
     if (!is_dir($dir)) mkdir($dir, 0770, true);
     file_put_contents($dir . "dte_{$codigoGeneracion}.json", json_encode($dteData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
     $db = supabase('dte_facturas');
     $res = $db->insert([
+        'company_id' => $companyId,
+        'usuario_id' => (int)($_SESSION['user_id'] ?? 0) ?: null,
         'codigo_generacion' => $codigoGeneracion,
         'emisor_nit' => $dteData['emisor']['nit'] ?? null,
         'numero_control' => $numeroControl,
@@ -111,6 +121,7 @@ try {
     }
 
     audit_log_final_summary($codigoGeneracion, $numeroControl, 'SUCCESS', [
+        'company_id' => $companyId,
         'estado_mh' => $goesResult['estado'] ?? null,
         'sello_recibido' => $goesResult['sello'] ?? null,
         'total_pagar' => $dteData['resumen']['totalPagar'] ?? 0,
