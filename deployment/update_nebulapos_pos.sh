@@ -33,6 +33,12 @@ command -v rsync >/dev/null || { echo "ERROR: rsync no instalado."; exit 1; }
 command -v php >/dev/null || { echo "ERROR: PHP no instalado."; exit 1; }
 command -v nginx >/dev/null || { echo "ERROR: nginx no instalado."; exit 1; }
 
+# Confirm the EC2 key can access the private GitHub repositories before touching production.
+if ! GIT_SSH_COMMAND="$SSH_CMD" git ls-remote "$REPO" "$BRANCH" >/dev/null 2>&1; then
+  echo "ERROR: la clave SSH de EC2 no puede acceder al repositorio $REPO."
+  exit 1
+fi
+
 mkdir -p "$BACKUP_ROOT"
 
 echo "===== BACKUP ====="
@@ -55,8 +61,10 @@ echo "Commit: $COMMIT"
 [[ -d "$SOURCE_ROOT/frontend" ]] || { echo "ERROR: falta frontend/."; exit 1; }
 [[ -f "$SOURCE_ROOT/frontend/pos_system/includes/sqlite_schema.php" ]] || { echo "ERROR: falta sqlite_schema.php."; exit 1; }
 
-# Runtime frontend only. Documentation and tests remain in Git but are NOT deployed into webroot.
-# This prevents exposing development documentation/tests publicly.
+# Documentation/tests stay in Git but never enter the public webroot.
+# Delete any previous copies before syncing runtime files.
+rm -rf "$WEB_ROOT/pos_system/documentacion" "$WEB_ROOT/pos_system/test"
+
 rsync -a --delete \
   --exclude='documentacion/' \
   --exclude='test/' \
